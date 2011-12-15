@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Matrixplorer", "Matrixplorer\Matrixplorer.csproj", "{F4B5DCE2-B150-4D21-9D5A-C040E94162CD}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "Content", "Content1\Content.contentproj", "{E4DB7047-4161-4ADB-86F2-22024BB49192}"
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "Content", "Matrixplorer\Content\Content.contentproj", "{E271E6FC-4B3E-49D4-872B-74BB49571AAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContentLibrary", "ContentLibrary\ContentLibrary\ContentLibrary.csproj", "{7E6A9631-3259-4018-B7D6-789C01E89077}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +21,16 @@ Global
 		{F4B5DCE2-B150-4D21-9D5A-C040E94162CD}.Release|Any CPU.ActiveCfg = Release|x86
 		{F4B5DCE2-B150-4D21-9D5A-C040E94162CD}.Release|x86.ActiveCfg = Release|x86
 		{F4B5DCE2-B150-4D21-9D5A-C040E94162CD}.Release|x86.Build.0 = Release|x86
-		{E4DB7047-4161-4ADB-86F2-22024BB49192}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E4DB7047-4161-4ADB-86F2-22024BB49192}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E4DB7047-4161-4ADB-86F2-22024BB49192}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{E4DB7047-4161-4ADB-86F2-22024BB49192}.Release|x86.ActiveCfg = Debug|Any CPU
+		{E271E6FC-4B3E-49D4-872B-74BB49571AAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E271E6FC-4B3E-49D4-872B-74BB49571AAE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E271E6FC-4B3E-49D4-872B-74BB49571AAE}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{E271E6FC-4B3E-49D4-872B-74BB49571AAE}.Release|x86.ActiveCfg = Debug|Any CPU
+		{7E6A9631-3259-4018-B7D6-789C01E89077}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{7E6A9631-3259-4018-B7D6-789C01E89077}.Debug|x86.ActiveCfg = Debug|x86
+		{7E6A9631-3259-4018-B7D6-789C01E89077}.Debug|x86.Build.0 = Debug|x86
+		{7E6A9631-3259-4018-B7D6-789C01E89077}.Release|Any CPU.ActiveCfg = Release|x86
+		{7E6A9631-3259-4018-B7D6-789C01E89077}.Release|x86.ActiveCfg = Release|x86
+		{7E6A9631-3259-4018-B7D6-789C01E89077}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

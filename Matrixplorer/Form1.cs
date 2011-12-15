@@ -12,5 +12,9 @@ namespace Matrixplorer {
         public Form1() {
             InitializeComponent();
         }
+
+        private void modelDisplayControl1_Resize(object sender, EventArgs e) {
+            modelDisplayControl1.UpdateAspectRatio();
+        }
     }
 }

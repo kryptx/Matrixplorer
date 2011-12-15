@@ -17,7 +17,8 @@ namespace Matrixplorer {
             get { return position; }
             set {
                 position = value;
-                CameraMoved.Invoke(this, new EventArgs());
+                if (CameraMoved != null)
+                    CameraMoved.Invoke(this, new EventArgs());
             }
         }
 
@@ -26,7 +27,8 @@ namespace Matrixplorer {
             get { return target; }
             set {
                 target = value;
-                CameraMoved.Invoke(this, new EventArgs());
+                if(CameraMoved != null)
+                    CameraMoved.Invoke(this, new EventArgs());
             }
         }
 
@@ -41,7 +43,8 @@ namespace Matrixplorer {
             get { return aspectRatio; }
             set {
                 aspectRatio = value;
-                AspectChanged.Invoke(this, new EventArgs());
+                if(AspectChanged != null)
+                    AspectChanged.Invoke(this, new EventArgs());
             }
         }
 
@@ -85,7 +88,7 @@ namespace Matrixplorer {
 
         private void ComputeVectors() {
             strafe = Vector3.Cross(Target - Position, Vector3.Up);
-            up = Vector3.Cross(Target - Position, strafe);
+            up = -Vector3.Cross(Target - Position, strafe);
         }
 
 
