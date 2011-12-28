@@ -8,17 +8,17 @@ using Microsoft.Xna.Framework;
 namespace Matrixplorer {
 
     class Camera {
+        
+        public event EventHandler<MatrixChangedEventArgs> ViewChanged;
+        public event EventHandler<MatrixChangedEventArgs> ProjectionChanged;
 
-        private event EventHandler<EventArgs> CameraMoved;
-        private event EventHandler<EventArgs> AspectChanged;
-
+        // position and view provide shortcut properties to generate a view matrix
         private Vector3 position;
         public Vector3 Position {
             get { return position; }
             set {
                 position = value;
-                if (CameraMoved != null)
-                    CameraMoved.Invoke(this, new EventArgs());
+                ComputeView();
             }
         }
 
@@ -27,59 +27,59 @@ namespace Matrixplorer {
             get { return target; }
             set {
                 target = value;
-                if(CameraMoved != null)
-                    CameraMoved.Invoke(this, new EventArgs());
+                ComputeView();
             }
         }
 
         private Vector3 up;
         private Vector3 strafe;
 
-        public Matrix Projection { get; protected set; }
+        private Matrix projection;
+        public Matrix Projection {
+
+            get { return projection; }
+            protected set {
+                projection = value;
+                if (ProjectionChanged != null) {
+                    ProjectionChanged.Invoke(this, 
+                        new MatrixChangedEventArgs { NewMatrix = value });
+                }
+            }
+
+        }
+
         private Matrix view;
+        public Matrix View {
+
+            get { return view; }
+            set {
+                view = value;
+                if (ViewChanged != null) {
+                    ViewChanged.Invoke(this, 
+                        new MatrixChangedEventArgs { NewMatrix = value });
+                }
+            }
+
+        }
 
         private float aspectRatio;
         public float AspectRatio {
             get { return aspectRatio; }
             set {
                 aspectRatio = value;
-                if(AspectChanged != null)
-                    AspectChanged.Invoke(this, new EventArgs());
+                ComputeProjection();
             }
-        }
-
-        public Matrix View {
-            get { return view; }
         }
 
 
         public Camera(Vector3 position, Vector3 target, float aspectRatio) {
 
-            // set these while we still have no event handler, so that we don't compute the view matrix using null vectors
             Position = position;
             Target = target;
-
-            CameraMoved += CameraMovedHandler;
-            AspectChanged += AspectChangedHandler;
-
-            // now compute the initial up/strafe vectors and view matrix
-            ComputeVectors();
-            ComputeView();
-
-            // this will trigger the AspectChanged event, and set the projection matrix
             AspectRatio = aspectRatio;
 
-        }
-
-
-        private void CameraMovedHandler(object sender, EventArgs e) {
-            ComputeVectors();
             ComputeView();
-        }
 
-
-        private void AspectChangedHandler(object sender, EventArgs e) {
-            ComputeProjection();
         }
 
 
@@ -87,18 +87,21 @@ namespace Matrixplorer {
 
 
         private void ComputeVectors() {
-            strafe = Vector3.Cross(Target - Position, Vector3.Up);
-            up = -Vector3.Cross(Target - Position, strafe);
+            strafe = -Vector3.Cross(Target - Position, Vector3.Up);
+            up = Vector3.Cross(Target - Position, strafe);
         }
 
-
+        // projection matrix computation uses fairly typical FOV and depth values
         private void ComputeProjection() {
             Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, AspectRatio, 1, 100);
         }
 
 
         private void ComputeView() {
-            view = Matrix.CreateLookAt(Position, Target, up);
+
+            ComputeVectors();
+            View = Matrix.CreateLookAt(Position, Target, up);
+
         }
 
     }

@@ -14,7 +14,7 @@ using System.Windows.Forms;
 using Microsoft.Xna.Framework.Graphics;
 #endregion
 
-namespace Matrixplorer
+namespace Matrixplorer.Controls
 {
     // System.Drawing and the XNA Framework both define Color and Rectangle
     // types. To avoid conflicts, we specify exactly which ones to use.
