@@ -14,41 +14,52 @@ namespace Matrixplorer.Controls {
 
         private const string elementFormat = "G2";
 
+        private Matrix matrix;
+        public Matrix Matrix {
+            get {
+                return matrix;
+            }
+            set {
+                matrix = value;
+                SetLabels();
+            }
+        }
+
         public MatrixDisplay() : base() {
             InitializeComponent();
         }
 
         public MatrixDisplay(Matrix source, EventHandler<MatrixChangedEventArgs> changedEvent) : this() {
             changedEvent += MatrixChanged;
-            SetValues(source);
+            Matrix = source;
         }
 
-        public void SetValues(Matrix source) {
+        private void SetLabels() {
 
-            label11.Text = source.M11.ToString(elementFormat);
-            label12.Text = source.M12.ToString(elementFormat);
-            label13.Text = source.M13.ToString(elementFormat);
-            label14.Text = source.M14.ToString(elementFormat);
+            label11.Text = matrix.M11.ToString(elementFormat);
+            label12.Text = matrix.M12.ToString(elementFormat);
+            label13.Text = matrix.M13.ToString(elementFormat);
+            label14.Text = matrix.M14.ToString(elementFormat);
 
-            label21.Text = source.M21.ToString(elementFormat);
-            label22.Text = source.M22.ToString(elementFormat);
-            label23.Text = source.M23.ToString(elementFormat);
-            label24.Text = source.M24.ToString(elementFormat);
+            label21.Text = matrix.M21.ToString(elementFormat);
+            label22.Text = matrix.M22.ToString(elementFormat);
+            label23.Text = matrix.M23.ToString(elementFormat);
+            label24.Text = matrix.M24.ToString(elementFormat);
 
-            label31.Text = source.M31.ToString(elementFormat);
-            label32.Text = source.M32.ToString(elementFormat);
-            label33.Text = source.M33.ToString(elementFormat);
-            label34.Text = source.M34.ToString(elementFormat);
+            label31.Text = matrix.M31.ToString(elementFormat);
+            label32.Text = matrix.M32.ToString(elementFormat);
+            label33.Text = matrix.M33.ToString(elementFormat);
+            label34.Text = matrix.M34.ToString(elementFormat);
 
-            label41.Text = source.M41.ToString(elementFormat);
-            label42.Text = source.M42.ToString(elementFormat);
-            label43.Text = source.M43.ToString(elementFormat);
-            label44.Text = source.M44.ToString(elementFormat);
+            label41.Text = matrix.M41.ToString(elementFormat);
+            label42.Text = matrix.M42.ToString(elementFormat);
+            label43.Text = matrix.M43.ToString(elementFormat);
+            label44.Text = matrix.M44.ToString(elementFormat);
 
         }
 
         public void MatrixChanged(object sender, MatrixChangedEventArgs e) {
-            SetValues(e.NewMatrix);
+            Matrix = e.NewMatrix;
         }
 
     }

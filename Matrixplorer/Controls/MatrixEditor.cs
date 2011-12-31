@@ -30,7 +30,7 @@ namespace Matrixplorer.Controls {
             }
 
             set {
-                if(Matrix.HasValue)
+                if(value.HasValue)
                     SetValues((Matrix)value);
             }
 
@@ -46,27 +46,27 @@ namespace Matrixplorer.Controls {
             SetValues(source);
         }
 
-        public void SetValues(Matrix source) {
+        private void SetValues(Matrix source) {
 
-            textBox11.Text = source.M11.ToString(elementFormat);
-            textBox12.Text = source.M12.ToString(elementFormat);
-            textBox13.Text = source.M13.ToString(elementFormat);
-            textBox14.Text = source.M14.ToString(elementFormat);
+            textBox11.Text = Math.Round((double)source.M11, 3).ToString();
+            textBox12.Text = Math.Round((double)source.M12, 3).ToString();
+            textBox13.Text = Math.Round((double)source.M13, 3).ToString();
+            textBox14.Text = Math.Round((double)source.M14, 3).ToString();
 
-            textBox21.Text = source.M21.ToString(elementFormat);
-            textBox22.Text = source.M22.ToString(elementFormat);
-            textBox23.Text = source.M23.ToString(elementFormat);
-            textBox24.Text = source.M24.ToString(elementFormat);
+            textBox21.Text = Math.Round((double)source.M21, 3).ToString();
+            textBox22.Text = Math.Round((double)source.M22, 3).ToString();
+            textBox23.Text = Math.Round((double)source.M23, 3).ToString();
+            textBox24.Text = Math.Round((double)source.M24, 3).ToString();
 
-            textBox31.Text = source.M31.ToString(elementFormat);
-            textBox32.Text = source.M32.ToString(elementFormat);
-            textBox33.Text = source.M33.ToString(elementFormat);
-            textBox34.Text = source.M34.ToString(elementFormat);
+            textBox31.Text = Math.Round((double)source.M31, 3).ToString();
+            textBox32.Text = Math.Round((double)source.M32, 3).ToString();
+            textBox33.Text = Math.Round((double)source.M33, 3).ToString();
+            textBox34.Text = Math.Round((double)source.M34, 3).ToString();
 
-            textBox41.Text = source.M41.ToString(elementFormat);
-            textBox42.Text = source.M42.ToString(elementFormat);
-            textBox43.Text = source.M43.ToString(elementFormat);
-            textBox44.Text = source.M44.ToString(elementFormat);
+            textBox41.Text = Math.Round((double)source.M41, 3).ToString();
+            textBox42.Text = Math.Round((double)source.M42, 3).ToString();
+            textBox43.Text = Math.Round((double)source.M43, 3).ToString();
+            textBox44.Text = Math.Round((double)source.M44, 3).ToString();
 
         }
 

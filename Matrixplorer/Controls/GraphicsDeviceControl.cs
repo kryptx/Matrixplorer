@@ -86,6 +86,8 @@ namespace Matrixplorer.Controls
 
                 // Give derived classes a chance to initialize themselves.
                 Initialize();
+
+                base.ResizeRedraw = true;
             }
 
             base.OnCreateControl();

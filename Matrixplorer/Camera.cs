@@ -104,6 +104,13 @@ namespace Matrixplorer {
 
         }
 
+
+        public void Rotate(int ticks) {
+            // say they are degrees for now.
+            float angle = MathHelper.ToRadians(ticks);
+            View = Matrix.CreateRotationY(angle) * View;
+        }
+
     }
 
 }

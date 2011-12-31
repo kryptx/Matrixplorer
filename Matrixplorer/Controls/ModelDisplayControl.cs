@@ -9,10 +9,14 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Matrixplorer.Controls {
 
     public class ModelDisplayControl : GraphicsDeviceControl {
+
+        private bool rotating;
+        private System.Drawing.Point mouseWas;
 
         private Camera camera;
         private ContentManager content;
@@ -20,7 +24,6 @@ namespace Matrixplorer.Controls {
         private Matrix[] boneTransforms;
 
         private BasicEffect axisEffect;
-        private VertexPositionColor[] axes;
         private VertexBuffer axesBuffer;
 
         private Matrix world;
@@ -43,6 +46,10 @@ namespace Matrixplorer.Controls {
             get { return camera.Projection; }
         }
 
+        public float AspectRatio {
+            get { return GraphicsDevice.Viewport.AspectRatio; }
+        }
+
         public event EventHandler<MatrixChangedEventArgs> WorldChanged;
         public event EventHandler<MatrixChangedEventArgs> ViewChanged;
         public event EventHandler<MatrixChangedEventArgs> ProjectionChanged;
@@ -50,26 +57,32 @@ namespace Matrixplorer.Controls {
 
         protected override void Initialize() {
 
+            content = new ContentManager(Services, "Content");
+
+            InitAxes();
+            InitCamera();
+            InitModel();
+
+            Application.Idle += delegate { Invalidate(); };
+            
+        }
+
+
+        private void InitModel() {
+            model = content.Load<Model>("SpaceShip");
+            boneTransforms = new Matrix[model.Bones.Count];
+            model.CopyAbsoluteBoneTransformsTo(boneTransforms);
+            World = Matrix.Identity;
+        }
+
+
+        private void InitCamera() {
+            
             camera = new Camera(
                 position: new Vector3(1.2f, 1.0f, 0.8f),
                 target: Vector3.Zero,
                 aspectRatio: GraphicsDevice.Viewport.AspectRatio
             );
-
-            axes = new VertexPositionColor[6] { 
-                new VertexPositionColor(new Vector3(-50, 0, 0), Color.Red),
-                new VertexPositionColor(new Vector3(50, 0, 0), Color.Red),
-                new VertexPositionColor(new Vector3(0, -50, 0), Color.Blue),
-                new VertexPositionColor(new Vector3(0, 50, 0), Color.Blue),
-                new VertexPositionColor(new Vector3(0, 0, -50), Color.Green),
-                new VertexPositionColor(new Vector3(0, 0, 50), Color.Green)
-            };
-
-            axesBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), axes.Count(), BufferUsage.None);
-            axesBuffer.SetData(axes);
-
-            axisEffect = new BasicEffect(GraphicsDevice);
-            axisEffect.VertexColorEnabled = true;
 
             ViewChanged.Invoke(this,
                 new MatrixChangedEventArgs { NewMatrix = camera.View });
@@ -80,51 +93,115 @@ namespace Matrixplorer.Controls {
             camera.ViewChanged += ViewChanged;
             camera.ProjectionChanged += ProjectionChanged;
 
-            content = new ContentManager(Services, "Content");
-            model = content.Load<Model>("SpaceShip");
-            boneTransforms = new Matrix[model.Bones.Count];
-            model.CopyAbsoluteBoneTransformsTo(boneTransforms);
+        }
 
-            World = Matrix.CreateWorld(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
 
-            Application.Idle += delegate { Invalidate(); };
+        private void InitAxes() {
+            // 606 vertices:
+            // 2 for each of 3 axes
+            // 2 for each of 300 'tick marks'
+            List<VertexPositionColor> axes = new List<VertexPositionColor>();
+
+            axes.Add(new VertexPositionColor(new Vector3(-50, 0, 0), Color.Red));
+            axes.Add(new VertexPositionColor(new Vector3(50, 0, 0), Color.Red));
+            axes.Add(new VertexPositionColor(new Vector3(0, -50, 0), Color.Blue));
+            axes.Add(new VertexPositionColor(new Vector3(0, 50, 0), Color.Blue));
+            axes.Add(new VertexPositionColor(new Vector3(0, 0, -50), Color.Green));
+            axes.Add(new VertexPositionColor(new Vector3(0, 0, 50), Color.Green));
+
+            for (int i = -50; i <= 50; i++) {
+                if (i % 5 == 0) {
+                    axes.Add(new VertexPositionColor(new Vector3(i, 0, -0.1f), Color.Red));
+                    axes.Add(new VertexPositionColor(new Vector3(i, 0, 0.1f), Color.Red));
+                    axes.Add(new VertexPositionColor(new Vector3(-0.1f, 0, i), Color.Green));
+                    axes.Add(new VertexPositionColor(new Vector3(0.1f, 0, i), Color.Green));
+                    axes.Add(new VertexPositionColor(new Vector3(-0.1f, i, 0), Color.Green));
+                    axes.Add(new VertexPositionColor(new Vector3(0.1f, i, 0), Color.Green));
+                } else {
+                    axes.Add(new VertexPositionColor(new Vector3(i, 0, -0.05f), Color.Red));
+                    axes.Add(new VertexPositionColor(new Vector3(i, 0, 0.05f), Color.Red));
+                    axes.Add(new VertexPositionColor(new Vector3(-0.05f, 0, i), Color.Green));
+                    axes.Add(new VertexPositionColor(new Vector3(0.05f, 0, i), Color.Green));
+                    axes.Add(new VertexPositionColor(new Vector3(-0.05f, i, 0), Color.Blue));
+                    axes.Add(new VertexPositionColor(new Vector3(0.05f, i, 0), Color.Blue));
+                }
+            }
+
+            axesBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), axes.Count(), BufferUsage.None);
+            axesBuffer.SetData(axes.ToArray());
+
+            axisEffect = new BasicEffect(GraphicsDevice);
+            axisEffect.VertexColorEnabled = true;
+        }
+
+
+
+        protected override void OnMouseDown(MouseEventArgs e) {
+
+            base.OnMouseDown(e);
+            mouseWas = e.Location;
+            rotating = true;
             
+            
+        }
+
+
+        protected override void OnMouseMove(MouseEventArgs e) {
+
+            base.OnMouseMove(e);
+
+            if (rotating) {
+                camera.Rotate(e.Location.X - mouseWas.X);
+                mouseWas = e.Location;
+            }
+
+        }
+
+
+        protected override void OnMouseUp(MouseEventArgs e) {
+            base.OnMouseUp(e);
+            rotating = false;
         }
 
 
         protected override void Draw() {
             
             GraphicsDevice.Clear(Color.White);
+            DrawAxes();
+            DrawModel();
+
+        }
+
+
+        private void DrawAxes() {
 
             axisEffect.View = camera.View;
             axisEffect.Projection = camera.Projection;
             axisEffect.CurrentTechnique.Passes[0].Apply();
             GraphicsDevice.SetVertexBuffer(axesBuffer);
-            GraphicsDevice.DrawPrimitives(PrimitiveType.LineList, 0, 6);
-            
-            if (model != null) {
-
-                // Draw the model.
-                foreach (ModelMesh mesh in model.Meshes) {
-                    foreach (BasicEffect effect in mesh.Effects) {
-                        effect.World = boneTransforms[mesh.ParentBone.Index] * world;
-                        effect.View = camera.View;
-                        effect.Projection = camera.Projection;
-
-                        effect.EnableDefaultLighting();
-                        effect.PreferPerPixelLighting = true;
-                        effect.SpecularPower = 16;
-                    }
-
-                    mesh.Draw();
-                }
-
-            }
-
+            GraphicsDevice.DrawPrimitives(PrimitiveType.LineList, 0, axesBuffer.VertexCount);
 
         }
 
-        public void UpdateAspectRatio() {
+
+        private void DrawModel() {
+            foreach (ModelMesh mesh in model.Meshes) {
+                foreach (BasicEffect effect in mesh.Effects) {
+                    effect.World = boneTransforms[mesh.ParentBone.Index] * world;
+                    effect.View = camera.View;
+                    effect.Projection = camera.Projection;
+
+                    effect.EnableDefaultLighting();
+                    effect.PreferPerPixelLighting = true;
+                    effect.SpecularPower = 16;
+                }
+
+                mesh.Draw();
+            }
+        }
+
+
+        public void UpdateCameraAspectRatio() {
             camera.AspectRatio = GraphicsDevice.Viewport.AspectRatio;
         }
 
