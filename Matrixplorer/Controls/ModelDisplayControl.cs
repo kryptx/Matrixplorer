@@ -11,57 +11,51 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using Matrixplorer.Components;
+
 namespace Matrixplorer.Controls {
 
     public class ModelDisplayControl : GraphicsDeviceControl {
 
-        private bool rotating;
+        private enum RotationType { None, Camera, Model };
+        private RotationType rotationType;
+
         private System.Drawing.Point mouseWas;
-
         private Camera camera;
-        private ContentManager content;
-        private Model model;
-        private Matrix[] boneTransforms;
-
         private BasicEffect axisEffect;
         private VertexBuffer axesBuffer;
 
-        private Matrix world;
-        public Matrix World {
-            get { return world; }
-            set {
-                world = value;
-                if (WorldChanged != null) {
-                    WorldChanged.Invoke(this,
-                        new MatrixChangedEventArgs { NewMatrix = value });
-                }
-            }
-        }
+        private Object3D model;
 
-        public Matrix View {
-            get { return camera.View; }
-        }
-
-        public Matrix Projection {
-            get { return camera.Projection; }
-        }
+        public Matrix World { get { return model.World; } }
+        public Matrix View { get { return camera.View; } }
+        public Matrix Projection { get { return camera.Projection; } }
 
         public float AspectRatio {
             get { return GraphicsDevice.Viewport.AspectRatio; }
         }
 
-        public event EventHandler<MatrixChangedEventArgs> WorldChanged;
-        public event EventHandler<MatrixChangedEventArgs> ViewChanged;
-        public event EventHandler<MatrixChangedEventArgs> ProjectionChanged;
+        public event EventHandler<MatrixChangedEventArgs> WorldChanged {
+            add { model.WorldChanged += value; }
+            remove { model.WorldChanged -= value; }
+        }
+
+        public event EventHandler<MatrixChangedEventArgs> ViewChanged {
+            add { camera.ViewChanged += value; }
+            remove { camera.ViewChanged -= value; }
+        }
+
+        public event EventHandler<MatrixChangedEventArgs> ProjectionChanged {
+            add { camera.ProjectionChanged += value; }
+            remove { camera.ProjectionChanged -= value; }
+        }
 
 
         protected override void Initialize() {
 
-            content = new ContentManager(Services, "Content");
-
-            InitAxes();
-            InitCamera();
             InitModel();
+            InitCamera();
+            InitAxes();
 
             Application.Idle += delegate { Invalidate(); };
             
@@ -69,37 +63,23 @@ namespace Matrixplorer.Controls {
 
 
         private void InitModel() {
-            model = content.Load<Model>("SpaceShip");
-            boneTransforms = new Matrix[model.Bones.Count];
-            model.CopyAbsoluteBoneTransformsTo(boneTransforms);
-            World = Matrix.Identity;
+            model = new Object3D(Services);
         }
 
 
         private void InitCamera() {
             
             camera = new Camera(
-                position: new Vector3(1.2f, 1.0f, 0.8f),
+                position: new Vector3(2.0f, 0.0f, 0.0f),
                 target: Vector3.Zero,
                 aspectRatio: GraphicsDevice.Viewport.AspectRatio
             );
-
-            ViewChanged.Invoke(this,
-                new MatrixChangedEventArgs { NewMatrix = camera.View });
-
-            ProjectionChanged.Invoke(this,
-                new MatrixChangedEventArgs { NewMatrix = camera.Projection });
-
-            camera.ViewChanged += ViewChanged;
-            camera.ProjectionChanged += ProjectionChanged;
 
         }
 
 
         private void InitAxes() {
-            // 606 vertices:
-            // 2 for each of 3 axes
-            // 2 for each of 300 'tick marks'
+
             List<VertexPositionColor> axes = new List<VertexPositionColor>();
 
             axes.Add(new VertexPositionColor(new Vector3(-50, 0, 0), Color.Red));
@@ -134,14 +114,38 @@ namespace Matrixplorer.Controls {
             axisEffect.VertexColorEnabled = true;
         }
 
+        protected override void OnMouseEnter(EventArgs e) {
+            base.OnMouseEnter(e);
+            this.Focus();
+        }
+
+
+        protected override void OnMouseWheel(MouseEventArgs e) {
+            base.OnMouseWheel(e);
+            
+            camera.Zoom(-(float)e.Delta / 480);
+        }
 
 
         protected override void OnMouseDown(MouseEventArgs e) {
 
             base.OnMouseDown(e);
             mouseWas = e.Location;
-            rotating = true;
-            
+
+            switch(e.Button) {
+                case System.Windows.Forms.MouseButtons.Left:
+                    rotationType = RotationType.Model;
+                    break;
+
+                case System.Windows.Forms.MouseButtons.Right:
+                    rotationType = RotationType.Camera;
+                    break;
+
+                default:
+                    rotationType = RotationType.None;
+                    break;
+
+            }
             
         }
 
@@ -150,17 +154,27 @@ namespace Matrixplorer.Controls {
 
             base.OnMouseMove(e);
 
-            if (rotating) {
-                camera.Rotate(e.Location.X - mouseWas.X);
-                mouseWas = e.Location;
+            switch (rotationType) {
+                case RotationType.Camera:
+                    camera.Rotate(e.Location.X - mouseWas.X);
+                    break;
+                case RotationType.Model:
+                    model.Rotate(e.Location.X - mouseWas.X);
+                    break;
+
+                default:
+                    break;
+
             }
+
+            mouseWas = e.Location;
 
         }
 
 
         protected override void OnMouseUp(MouseEventArgs e) {
             base.OnMouseUp(e);
-            rotating = false;
+            rotationType = RotationType.None;
         }
 
 
@@ -168,7 +182,7 @@ namespace Matrixplorer.Controls {
             
             GraphicsDevice.Clear(Color.White);
             DrawAxes();
-            DrawModel();
+            model.Draw(camera);
 
         }
 
@@ -183,22 +197,6 @@ namespace Matrixplorer.Controls {
 
         }
 
-
-        private void DrawModel() {
-            foreach (ModelMesh mesh in model.Meshes) {
-                foreach (BasicEffect effect in mesh.Effects) {
-                    effect.World = boneTransforms[mesh.ParentBone.Index] * world;
-                    effect.View = camera.View;
-                    effect.Projection = camera.Projection;
-
-                    effect.EnableDefaultLighting();
-                    effect.PreferPerPixelLighting = true;
-                    effect.SpecularPower = 16;
-                }
-
-                mesh.Draw();
-            }
-        }
 
 
         public void UpdateCameraAspectRatio() {

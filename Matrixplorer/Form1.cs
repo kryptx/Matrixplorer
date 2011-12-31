@@ -18,19 +18,11 @@ namespace Matrixplorer {
             InitializeComponent();
             InitFormValues();
 
-            modelDisplayControl1.WorldChanged += worldMatrixDisplay.MatrixChanged;
-            modelDisplayControl1.ViewChanged += viewMatrixDisplay.MatrixChanged;
-            modelDisplayControl1.ProjectionChanged += projectionMatrixDisplay.MatrixChanged;
-            modelDisplayControl1.ProjectionChanged += (sender, e) => {
-                aspectRatioTextBox.Text = modelDisplayControl1.AspectRatio.ToString("G3");
-            };
-
         }
 
 
-
         private void InitFormValues() {
-
+            
             resultMatrixDisplay.Matrix = Matrix.Identity;
 
             yourDispositionComboBox.SelectedIndex = yourDispositionComboBox.Items.IndexOf("Transform");
@@ -149,6 +141,25 @@ namespace Matrixplorer {
             } catch {
                 // TODO: show error messages when something fails
             }
+        }
+
+        private void Form1_Load(object sender, EventArgs e) {
+
+            SetMatrixDisplays();
+
+            modelDisplayControl1.WorldChanged += worldMatrixDisplay.MatrixChanged;
+            modelDisplayControl1.ViewChanged += viewMatrixDisplay.MatrixChanged;
+            modelDisplayControl1.ProjectionChanged += projectionMatrixDisplay.MatrixChanged;
+            modelDisplayControl1.ProjectionChanged += (_sender, _e) => {
+                aspectRatioTextBox.Text = modelDisplayControl1.AspectRatio.ToString("G3");
+            };
+
+        }
+
+        private void SetMatrixDisplays() {
+            worldMatrixDisplay.Matrix = modelDisplayControl1.World;
+            viewMatrixDisplay.Matrix = modelDisplayControl1.View;
+            projectionMatrixDisplay.Matrix = modelDisplayControl1.Projection;
         }
         
     }

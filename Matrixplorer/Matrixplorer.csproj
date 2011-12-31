@@ -48,7 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Camera.cs" />
+    <Compile Include="Components\Camera.cs" />
+    <Compile Include="Components\ICamera.cs" />
+    <Compile Include="Components\Object3D.cs" />
     <Compile Include="Controls\MatrixEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>

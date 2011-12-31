@@ -5,9 +5,9 @@ using System.Text;
 
 using Microsoft.Xna.Framework;
 
-namespace Matrixplorer {
+namespace Matrixplorer.Components {
 
-    class Camera {
+    class Camera : ICamera {
         
         public event EventHandler<MatrixChangedEventArgs> ViewChanged;
         public event EventHandler<MatrixChangedEventArgs> ProjectionChanged;
@@ -38,7 +38,7 @@ namespace Matrixplorer {
         public Matrix Projection {
 
             get { return projection; }
-            protected set {
+            set {
                 projection = value;
                 if (ProjectionChanged != null) {
                     ProjectionChanged.Invoke(this, 
@@ -54,6 +54,12 @@ namespace Matrixplorer {
             get { return view; }
             set {
                 view = value;
+
+                Matrix inverseView = Matrix.Invert(value);
+                position = inverseView.Translation;
+                target = inverseView.Forward;
+                up = inverseView.Up;
+
                 if (ViewChanged != null) {
                     ViewChanged.Invoke(this, 
                         new MatrixChangedEventArgs { NewMatrix = value });
@@ -93,7 +99,7 @@ namespace Matrixplorer {
 
         // projection matrix computation uses fairly typical FOV and depth values
         private void ComputeProjection() {
-            Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, AspectRatio, 1, 100);
+            Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, AspectRatio, 0.1f, 50.0f);
         }
 
 
@@ -106,10 +112,16 @@ namespace Matrixplorer {
 
 
         public void Rotate(int ticks) {
-            // say they are degrees for now.
+            // ticks == degrees makes for a comfortable amount of rotation
             float angle = MathHelper.ToRadians(ticks);
             View = Matrix.CreateRotationY(angle) * View;
         }
+
+
+        public void Zoom(float distance) {
+            Position *= (1 + (distance / position.Length()));
+        }
+
 
     }
 

@@ -29,6 +29,7 @@
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.modelDisplayControl1 = new Matrixplorer.Controls.ModelDisplayControl();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -102,16 +103,15 @@
             this.yourDestinationComboBox = new System.Windows.Forms.ComboBox();
             this.yourDispositionComboBox = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.resultMatrixDisplay = new Matrixplorer.Controls.MatrixDisplay();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.yourMatrixEditor = new Matrixplorer.Controls.MatrixEditor();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.worldGroupBox = new System.Windows.Forms.GroupBox();
-            this.viewGroupBox = new System.Windows.Forms.GroupBox();
-            this.projectionGroupBox = new System.Windows.Forms.GroupBox();
-            this.resultMatrixDisplay = new Matrixplorer.Controls.MatrixDisplay();
-            this.yourMatrixEditor = new Matrixplorer.Controls.MatrixEditor();
-            this.modelDisplayControl1 = new Matrixplorer.Controls.ModelDisplayControl();
             this.worldMatrixDisplay = new Matrixplorer.Controls.MatrixDisplay();
+            this.viewGroupBox = new System.Windows.Forms.GroupBox();
             this.viewMatrixDisplay = new Matrixplorer.Controls.MatrixDisplay();
+            this.projectionGroupBox = new System.Windows.Forms.GroupBox();
             this.projectionMatrixDisplay = new Matrixplorer.Controls.MatrixDisplay();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -179,6 +179,16 @@
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Output";
+            // 
+            // modelDisplayControl1
+            // 
+            this.modelDisplayControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.modelDisplayControl1.Location = new System.Drawing.Point(3, 16);
+            this.modelDisplayControl1.Name = "modelDisplayControl1";
+            this.modelDisplayControl1.Size = new System.Drawing.Size(376, 298);
+            this.modelDisplayControl1.TabIndex = 0;
+            this.modelDisplayControl1.Text = "modelDisplayControl1";
+            this.modelDisplayControl1.Resize += new System.EventHandler(this.modelDisplayControl1_Resize);
             // 
             // tableLayoutPanel1
             // 
@@ -943,6 +953,15 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Result";
             // 
+            // resultMatrixDisplay
+            // 
+            this.resultMatrixDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.resultMatrixDisplay.Location = new System.Drawing.Point(3, 16);
+            this.resultMatrixDisplay.Matrix = new Microsoft.Xna.Framework.Matrix(0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F);
+            this.resultMatrixDisplay.Name = "resultMatrixDisplay";
+            this.resultMatrixDisplay.Size = new System.Drawing.Size(222, 101);
+            this.resultMatrixDisplay.TabIndex = 0;
+            // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.yourMatrixEditor);
@@ -953,6 +972,15 @@
             this.groupBox3.TabIndex = 8;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Your Matrix";
+            // 
+            // yourMatrixEditor
+            // 
+            this.yourMatrixEditor.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.yourMatrixEditor.Location = new System.Drawing.Point(3, 16);
+            this.yourMatrixEditor.Matrix = null;
+            this.yourMatrixEditor.Name = "yourMatrixEditor";
+            this.yourMatrixEditor.Size = new System.Drawing.Size(222, 95);
+            this.yourMatrixEditor.TabIndex = 3;
             // 
             // tableLayoutPanel2
             // 
@@ -985,6 +1013,15 @@
             this.worldGroupBox.TabStop = false;
             this.worldGroupBox.Text = "World";
             // 
+            // worldMatrixDisplay
+            // 
+            this.worldMatrixDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.worldMatrixDisplay.Location = new System.Drawing.Point(3, 22);
+            this.worldMatrixDisplay.Matrix = new Microsoft.Xna.Framework.Matrix(0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F);
+            this.worldMatrixDisplay.Name = "worldMatrixDisplay";
+            this.worldMatrixDisplay.Size = new System.Drawing.Size(279, 138);
+            this.worldMatrixDisplay.TabIndex = 0;
+            // 
             // viewGroupBox
             // 
             this.viewGroupBox.Controls.Add(this.viewMatrixDisplay);
@@ -997,6 +1034,15 @@
             this.viewGroupBox.TabStop = false;
             this.viewGroupBox.Text = "View";
             // 
+            // viewMatrixDisplay
+            // 
+            this.viewMatrixDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.viewMatrixDisplay.Location = new System.Drawing.Point(3, 22);
+            this.viewMatrixDisplay.Matrix = new Microsoft.Xna.Framework.Matrix(0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F);
+            this.viewMatrixDisplay.Name = "viewMatrixDisplay";
+            this.viewMatrixDisplay.Size = new System.Drawing.Size(279, 138);
+            this.viewMatrixDisplay.TabIndex = 0;
+            // 
             // projectionGroupBox
             // 
             this.projectionGroupBox.Controls.Add(this.projectionMatrixDisplay);
@@ -1008,53 +1054,6 @@
             this.projectionGroupBox.TabIndex = 2;
             this.projectionGroupBox.TabStop = false;
             this.projectionGroupBox.Text = "Projection";
-            // 
-            // resultMatrixDisplay
-            // 
-            this.resultMatrixDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.resultMatrixDisplay.Location = new System.Drawing.Point(3, 16);
-            this.resultMatrixDisplay.Matrix = new Microsoft.Xna.Framework.Matrix(0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F);
-            this.resultMatrixDisplay.Name = "resultMatrixDisplay";
-            this.resultMatrixDisplay.Size = new System.Drawing.Size(222, 101);
-            this.resultMatrixDisplay.TabIndex = 0;
-            // 
-            // yourMatrixEditor
-            // 
-            this.yourMatrixEditor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.yourMatrixEditor.Location = new System.Drawing.Point(3, 16);
-            this.yourMatrixEditor.Matrix = null;
-            this.yourMatrixEditor.Name = "yourMatrixEditor";
-            this.yourMatrixEditor.Size = new System.Drawing.Size(222, 95);
-            this.yourMatrixEditor.TabIndex = 3;
-            // 
-            // modelDisplayControl1
-            // 
-            this.modelDisplayControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.modelDisplayControl1.Location = new System.Drawing.Point(3, 16);
-            this.modelDisplayControl1.Name = "modelDisplayControl1";
-            this.modelDisplayControl1.Size = new System.Drawing.Size(376, 298);
-            this.modelDisplayControl1.TabIndex = 0;
-            this.modelDisplayControl1.Text = "modelDisplayControl1";
-            this.modelDisplayControl1.World = new Microsoft.Xna.Framework.Matrix(0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F);
-            this.modelDisplayControl1.Resize += new System.EventHandler(this.modelDisplayControl1_Resize);
-            // 
-            // worldMatrixDisplay
-            // 
-            this.worldMatrixDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.worldMatrixDisplay.Location = new System.Drawing.Point(3, 22);
-            this.worldMatrixDisplay.Matrix = new Microsoft.Xna.Framework.Matrix(0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F);
-            this.worldMatrixDisplay.Name = "worldMatrixDisplay";
-            this.worldMatrixDisplay.Size = new System.Drawing.Size(279, 138);
-            this.worldMatrixDisplay.TabIndex = 0;
-            // 
-            // viewMatrixDisplay
-            // 
-            this.viewMatrixDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.viewMatrixDisplay.Location = new System.Drawing.Point(3, 22);
-            this.viewMatrixDisplay.Matrix = new Microsoft.Xna.Framework.Matrix(0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F);
-            this.viewMatrixDisplay.Name = "viewMatrixDisplay";
-            this.viewMatrixDisplay.Size = new System.Drawing.Size(279, 138);
-            this.viewMatrixDisplay.TabIndex = 0;
             // 
             // projectionMatrixDisplay
             // 
@@ -1075,6 +1074,7 @@
             this.MinimumSize = new System.Drawing.Size(783, 560);
             this.Name = "Form1";
             this.Text = "Matrixplorer";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
