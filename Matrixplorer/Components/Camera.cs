@@ -7,10 +7,13 @@ using Microsoft.Xna.Framework;
 
 namespace Matrixplorer.Components {
 
-    class Camera : ICamera {
+    class Camera : ICamera, IUpdateable {
         
         public event EventHandler<MatrixChangedEventArgs> ViewChanged;
         public event EventHandler<MatrixChangedEventArgs> ProjectionChanged;
+
+        private Animation<Matrix> viewAnimation;
+        private Animation<Matrix> projectionAnimation;
 
         // position and view provide shortcut properties to generate a view matrix
         private Vector3 position;
@@ -123,6 +126,33 @@ namespace Matrixplorer.Components {
         }
 
 
+        public void AnimateViewTo(Matrix end) {
+            viewAnimation = new Animation<Matrix>(View, end);
+        }
+
+
+        public void AnimateProjectionTo(Matrix end) {
+            projectionAnimation = new Animation<Matrix>(Projection, end);
+        }
+
+
+        public void Update() {
+
+            if (viewAnimation != null) {
+                View = viewAnimation.CurrentValue;
+                if (viewAnimation.Ended) {
+                    viewAnimation = null;
+                }
+            }
+
+            if (projectionAnimation != null) {
+                Projection = projectionAnimation.CurrentValue;
+                if (projectionAnimation.Ended) {
+                    projectionAnimation = null;
+                }
+            }
+
+        }
     }
 
 }

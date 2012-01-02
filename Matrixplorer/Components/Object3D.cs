@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Matrixplorer.Components {
 
-    public class Object3D {
+    public class Object3D : IUpdateable {
 
         public event EventHandler<MatrixChangedEventArgs> WorldChanged;
 
@@ -28,9 +28,14 @@ namespace Matrixplorer.Components {
             }
         }
 
-        public Object3D(IServiceProvider services) {
+        private Animation<Matrix> worldAnimation;
 
-            ContentManager content = new ContentManager(services, "Content");
+        public void AnimateWorldTo(Matrix end) {
+            worldAnimation = new Animation<Matrix>(world, end);
+        }
+
+        public Object3D(ContentManager content) {
+            
             model = content.Load<Model>("SpaceShip");
             boneTransforms = new Matrix[model.Bones.Count];
             model.CopyAbsoluteBoneTransformsTo(boneTransforms);
@@ -58,6 +63,16 @@ namespace Matrixplorer.Components {
             World *= Matrix.CreateRotationY(MathHelper.ToRadians(angle));
         }
 
+
+        public void Update() {
+
+            if (worldAnimation != null) {
+                World = worldAnimation.CurrentValue;
+                if (worldAnimation.Ended) {
+                    worldAnimation = null;
+                }
+            }
+        }
     }
 
 }

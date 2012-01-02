@@ -143,6 +143,10 @@ namespace Matrixplorer {
             }
         }
 
+
+
+
+
         private void Form1_Load(object sender, EventArgs e) {
 
             SetMatrixDisplays();
@@ -160,6 +164,69 @@ namespace Matrixplorer {
             worldMatrixDisplay.Matrix = modelDisplayControl1.World;
             viewMatrixDisplay.Matrix = modelDisplayControl1.View;
             projectionMatrixDisplay.Matrix = modelDisplayControl1.Projection;
+        }
+
+        private void yourGoButton_Click(object sender, EventArgs e) {
+            ProcessGoButton(
+                yourDispositionComboBox.Text.ToLowerInvariant(), 
+                yourDestinationComboBox.Text.ToLowerInvariant()
+            );
+        }
+
+        private void resultGoButton_Click(object sender, EventArgs e) {
+            ProcessGoButton(
+                resultDispositionComboBox.Text.ToLowerInvariant(), 
+                resultDestinationComboBox.Text.ToLowerInvariant()
+            );
+        }
+
+        private void ProcessGoButton(string disposition, string destination) {
+
+            if (disposition.Equals("assign to")) {
+                SetMatrix(destination, (Matrix)yourMatrixEditor.Matrix);
+            }
+
+            if (disposition.Equals("transform")) {
+                TransformMatrix(destination, (Matrix)yourMatrixEditor.Matrix);
+            }
+
+        }
+
+        private void TransformMatrix(string whichMatrix, Matrix transformation) {
+
+            switch (whichMatrix) {
+
+                case "world":
+                case "view":
+                case "projection":
+                    modelDisplayControl1.AnimateTransform(whichMatrix, transformation);
+                    break;
+
+                case "result":
+                    // violation of SRP?
+                    resultMatrixDisplay.Matrix = transformation * resultMatrixDisplay.Matrix;
+                    break;
+
+            }
+
+        }
+
+        private void SetMatrix(string whichMatrix, Matrix matrix) {
+
+            switch (whichMatrix) {
+
+                case "world":
+                case "view":
+                case "projection":
+                    modelDisplayControl1.AnimateTo(whichMatrix, matrix);
+                    break;
+
+                case "result":
+                    resultMatrixDisplay.Matrix = matrix;
+                    break;
+
+            }
+
         }
         
     }

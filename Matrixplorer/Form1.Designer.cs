@@ -250,6 +250,7 @@
             this.resultGoButton.TabIndex = 2;
             this.resultGoButton.Text = "Go";
             this.resultGoButton.UseVisualStyleBackColor = true;
+            this.resultGoButton.Click += new System.EventHandler(this.resultGoButton_Click);
             // 
             // resultDestinationComboBox
             // 
@@ -913,6 +914,7 @@
             this.yourGoButton.TabIndex = 2;
             this.yourGoButton.Text = "Go";
             this.yourGoButton.UseVisualStyleBackColor = true;
+            this.yourGoButton.Click += new System.EventHandler(this.yourGoButton_Click);
             // 
             // yourDestinationComboBox
             // 

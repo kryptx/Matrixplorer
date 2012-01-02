@@ -31,6 +31,8 @@ namespace Matrixplorer.Controls {
         public Matrix View { get { return camera.View; } }
         public Matrix Projection { get { return camera.Projection; } }
 
+        private List<IUpdateable> components;
+
         public float AspectRatio {
             get { return GraphicsDevice.Viewport.AspectRatio; }
         }
@@ -53,17 +55,64 @@ namespace Matrixplorer.Controls {
 
         protected override void Initialize() {
 
+            components = new List<IUpdateable>();
             InitModel();
             InitCamera();
             InitAxes();
-
             Application.Idle += delegate { Invalidate(); };
             
         }
 
 
+        private void SetAnimation(string whichMatrix, Matrix end) {
+            switch (whichMatrix) {
+                case "world":
+                    model.AnimateWorldTo(end);
+                    break;
+
+                case "view":
+                    camera.AnimateViewTo(end);
+                    break;
+
+                case "projection":
+                    camera.AnimateProjectionTo(end);
+                    break;
+            }
+        }
+
+        private Matrix GetMatrix(string whichMatrix) {
+            switch (whichMatrix) {
+                case "world":
+                    return model.World;
+
+                case "view":
+                    return camera.View;
+
+                case "projection":
+                    return camera.Projection;
+
+                default:
+                    throw new InvalidOperationException(String.Format("{0} is not a recognized matrix.", whichMatrix));
+            }
+
+        }
+
+
+        public void AnimateTo(string whichMatrix, Matrix end) {
+            SetAnimation(whichMatrix, end);
+        }
+
+        public void AnimateTransform(string whichMatrix, Matrix transform) {
+            SetAnimation(whichMatrix, transform * GetMatrix(whichMatrix));
+        }
+
+
         private void InitModel() {
-            model = new Object3D(Services);
+            
+            ContentManager content = new ContentManager(Services, "Content");
+            model = new Object3D(content);
+            components.Add(model);
+
         }
 
 
@@ -74,6 +123,8 @@ namespace Matrixplorer.Controls {
                 target: Vector3.Zero,
                 aspectRatio: GraphicsDevice.Viewport.AspectRatio
             );
+
+            components.Add(camera);
 
         }
 
@@ -179,7 +230,8 @@ namespace Matrixplorer.Controls {
 
 
         protected override void Draw() {
-            
+
+            components.ForEach(c => c.Update());
             GraphicsDevice.Clear(Color.White);
             DrawAxes();
             model.Draw(camera);
@@ -196,7 +248,6 @@ namespace Matrixplorer.Controls {
             GraphicsDevice.DrawPrimitives(PrimitiveType.LineList, 0, axesBuffer.VertexCount);
 
         }
-
 
 
         public void UpdateCameraAspectRatio() {
