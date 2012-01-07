@@ -34,6 +34,14 @@ namespace Matrixplorer {
             fovUnitsComboBox.SelectedIndex = fovUnitsComboBox.Items.IndexOf("Radians");
             angleUnitsComboBox.SelectedIndex = angleUnitsComboBox.Items.IndexOf("Radians");
 
+            viewPositionTextBox.Text = "2,0,0";
+            viewTargetTextBox.Text = "0,0,0";
+            viewUpTextBox.Text = "0,1,0";
+
+            worldPositionTextBox.Text = "0,0,0";
+            worldForwardTextBox.Text = "0,0,-1";
+            worldUpTextBox.Text = "0,1,0";
+
             yAxisRadioButton.Checked = true;
 
         }
@@ -50,8 +58,8 @@ namespace Matrixplorer {
                     float.Parse(orthographicHeightTextBox.Text),
                     float.Parse(zNearPlaneTextBox.Text),
                     float.Parse(zFarPlaneTextBox.Text));
-            } catch { 
-                // TODO: show error messages when something fails
+            } catch (FormatException) {
+                MessageBox.Show("Width, height, near plane and far plane must all be numeric.");
             }
         }
 
@@ -63,8 +71,8 @@ namespace Matrixplorer {
                     float.Parse(nearPlaneTextBox.Text),
                     float.Parse(farPlaneTextBox.Text)
                 );
-            } catch {
-                // TODO: show error messages when something fails
+            } catch (FormatException) {
+                MessageBox.Show("Field of view, aspect ratio, near plane and far plane must all be numeric.");
             }
 
         }
@@ -76,8 +84,8 @@ namespace Matrixplorer {
                     ParseVector(viewTargetTextBox.Text),
                     ParseVector(viewUpTextBox.Text)
                 );
-            } catch {
-                // TODO: show error messages when something fails
+            } catch (FormatException) {
+                MessageBox.Show("Position, target, and up vectors must all be in the format X,Y,Z where X, Y, and Z are numbers.");
             }
 
         }
@@ -92,7 +100,7 @@ namespace Matrixplorer {
                 strings.Select<string, float>(s => float.Parse(s)).ToArray();
 
             if (floats.Count() != 3) {
-                throw new InvalidOperationException("Vector must be in the format X,Y,Z");
+                throw new FormatException("Vector must be in the format X,Y,Z.");
             }
 
             return new Vector3(floats[0], floats[1], floats[2]);
@@ -103,31 +111,53 @@ namespace Matrixplorer {
         private void createScaleButton_Click(object sender, EventArgs e) {
             try {
                 yourMatrixEditor.Matrix = Matrix.CreateScale(float.Parse(scalarTextBox.Text));
-            } catch {
-                // TODO: show error messages when something fails
+            } catch (FormatException) {
+                MessageBox.Show("Scalar value must be a number.");
             }
         }
+
 
         private void createRotationButton_Click(object sender, EventArgs e) {
             try {
+
                 if (xAxisRadioButton.Checked) {
-                    yourMatrixEditor.Matrix = Matrix.CreateRotationX(float.Parse(angleTextBox.Text));
+
+                    yourMatrixEditor.Matrix = Matrix.CreateRotationX(
+                        (angleUnitsComboBox.Text == "Radians")?
+                        float.Parse(angleTextBox.Text) :
+                        MathHelper.ToRadians(float.Parse(angleTextBox.Text))
+                    );
+
                 } else if (yAxisRadioButton.Checked) {
-                    yourMatrixEditor.Matrix = Matrix.CreateRotationY(float.Parse(angleTextBox.Text));
+
+                    yourMatrixEditor.Matrix = Matrix.CreateRotationY(
+                        (angleUnitsComboBox.Text == "Radians") ?
+                        float.Parse(angleTextBox.Text) :
+                        MathHelper.ToRadians(float.Parse(angleTextBox.Text))
+                    );
+
                 } else if (zAxisRadioButton.Checked) {
-                    yourMatrixEditor.Matrix = Matrix.CreateRotationZ(float.Parse(angleTextBox.Text));
+
+                    yourMatrixEditor.Matrix = Matrix.CreateRotationZ(
+                        (angleUnitsComboBox.Text == "Radians") ?
+                        float.Parse(angleTextBox.Text) :
+                        MathHelper.ToRadians(float.Parse(angleTextBox.Text))
+                    );
+
                 }
-            } catch {
-                // TODO: show error messages when something fails
+
+            } catch (FormatException) {
+                MessageBox.Show("Angle must be a number.");
             }
 
         }
+
 
         private void createTranslationButton_Click(object sender, EventArgs e) {
             try {
                 yourMatrixEditor.Matrix = Matrix.CreateTranslation(ParseVector(translationVectorTextBox.Text));
             } catch {
-                // TODO: show error messages when something fails
+                MessageBox.Show("Your translation vector is not of the form X,Y,Z where X, Y, and Z are numbers.");
             }
         }
 
@@ -138,8 +168,8 @@ namespace Matrixplorer {
                     ParseVector(worldForwardTextBox.Text),
                     ParseVector(worldUpTextBox.Text)
                 );
-            } catch {
-                // TODO: show error messages when something fails
+            } catch (FormatException) {
+                MessageBox.Show("One or more vectors is not of the form X,Y,Z where X, Y, and Z are numbers.");
             }
         }
 
@@ -167,27 +197,39 @@ namespace Matrixplorer {
         }
 
         private void yourGoButton_Click(object sender, EventArgs e) {
-            ProcessGoButton(
-                yourDispositionComboBox.Text.ToLowerInvariant(), 
-                yourDestinationComboBox.Text.ToLowerInvariant()
-            );
+            try {
+                ProcessGoButton(
+                    yourDispositionComboBox.Text.ToLowerInvariant(),
+                    yourDestinationComboBox.Text.ToLowerInvariant(),
+                    (Matrix)yourMatrixEditor.Matrix
+                );
+            } catch (InvalidOperationException) {
+
+                MessageBox.Show("Your matrix could not be read.  One or more elements is not numeric.");
+            }
         }
 
         private void resultGoButton_Click(object sender, EventArgs e) {
-            ProcessGoButton(
-                resultDispositionComboBox.Text.ToLowerInvariant(), 
-                resultDestinationComboBox.Text.ToLowerInvariant()
-            );
+            try {
+                ProcessGoButton(
+                    resultDispositionComboBox.Text.ToLowerInvariant(), 
+                    resultDestinationComboBox.Text.ToLowerInvariant(),
+                    resultMatrixDisplay.Matrix
+                );
+            } catch (InvalidOperationException ex) {
+                MessageBox.Show(ex.Message);
+            }
+
         }
 
-        private void ProcessGoButton(string disposition, string destination) {
+        private void ProcessGoButton(string disposition, string destination, Matrix matrix) {
 
             if (disposition.Equals("assign to")) {
-                SetMatrix(destination, (Matrix)yourMatrixEditor.Matrix);
+                SetMatrix(destination, matrix);
             }
 
             if (disposition.Equals("transform")) {
-                TransformMatrix(destination, (Matrix)yourMatrixEditor.Matrix);
+                TransformMatrix(destination, matrix);
             }
 
         }
@@ -199,7 +241,7 @@ namespace Matrixplorer {
                 case "world":
                 case "view":
                 case "projection":
-                    modelDisplayControl1.AnimateTransform(whichMatrix, transformation);
+                    modelDisplayControl1.AnimateTransform(MatrixHelper.StringToType(whichMatrix), transformation);
                     break;
 
                 case "result":
@@ -218,7 +260,7 @@ namespace Matrixplorer {
                 case "world":
                 case "view":
                 case "projection":
-                    modelDisplayControl1.AnimateTo(whichMatrix, matrix);
+                    modelDisplayControl1.AnimateTo(MatrixHelper.StringToType(whichMatrix), matrix);
                     break;
 
                 case "result":

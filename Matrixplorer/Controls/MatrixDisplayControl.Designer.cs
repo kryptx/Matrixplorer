@@ -1,5 +1,5 @@
 ﻿namespace Matrixplorer.Controls {
-    partial class MatrixDisplay {
+    partial class MatrixDisplayControl {
         /// <summary> 
         /// Required designer variable.
         /// </summary>

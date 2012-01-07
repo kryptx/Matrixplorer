@@ -48,22 +48,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ResultDisplayMatrixCommand.cs" />
+    <Compile Include="Commands\ModelDisplayMatrixCommand.cs" />
+    <Compile Include="Components\AnimatableMatrix.cs" />
+    <Compile Include="Globals.cs" />
+    <Compile Include="Commands\MatrixCommand.cs" />
+    <Compile Include="Commands\SetModelCommand.cs" />
+    <Compile Include="Commands\SetResultCommand.cs" />
+    <Compile Include="Commands\TransformModelCommand.cs" />
+    <Compile Include="Commands\TransformResultCommand.cs" />
     <Compile Include="Components\Animation.cs" />
     <Compile Include="Components\Camera.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\CommandManager.cs" />
     <Compile Include="Components\ICamera.cs" />
-    <Compile Include="Components\IUpdateable.cs" />
     <Compile Include="Components\Object3D.cs" />
-    <Compile Include="Controls\MatrixEditor.cs">
+    <Compile Include="Controls\MatrixEditorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\MatrixEditor.Designer.cs">
-      <DependentUpon>MatrixEditor.cs</DependentUpon>
+    <Compile Include="Controls\MatrixEditorControl.Designer.cs">
+      <DependentUpon>MatrixEditorControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\MatrixDisplay.cs">
+    <Compile Include="Controls\MatrixDisplayControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\MatrixDisplay.Designer.cs">
-      <DependentUpon>MatrixDisplay.cs</DependentUpon>
+    <Compile Include="Controls\MatrixDisplayControl.Designer.cs">
+      <DependentUpon>MatrixDisplayControl.cs</DependentUpon>
     </Compile>
     <Compile Include="EventArgs\MatrixChangedEventArgs.cs" />
     <Compile Include="Form1.cs">
@@ -79,14 +89,15 @@
     <Compile Include="Controls\ModelDisplayControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Helpers\MatrixHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceContainer.cs" />
-    <EmbeddedResource Include="Controls\MatrixEditor.resx">
-      <DependentUpon>MatrixEditor.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\MatrixEditorControl.resx">
+      <DependentUpon>MatrixEditorControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\MatrixDisplay.resx">
-      <DependentUpon>MatrixDisplay.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\MatrixDisplayControl.resx">
+      <DependentUpon>MatrixDisplayControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

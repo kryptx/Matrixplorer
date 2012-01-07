@@ -27,25 +27,38 @@ namespace Matrixplorer.Controls {
 
         private Object3D model;
 
-        public Matrix World { get { return model.World; } }
-        public Matrix View { get { return camera.View; } }
-        public Matrix Projection { get { return camera.Projection; } }
+        public Matrix World { 
+            get { return model.World; }
+            set { model.World = value; }
+        }
 
-        private List<IUpdateable> components;
+        public Matrix View {
+            get { return camera.View; }
+            set { camera.View = value;
+            }
+        }
+
+        public Matrix Projection {
+            get { return camera.Projection; }
+            set { camera.Projection = value; }
+        }
 
         public float AspectRatio {
             get { return GraphicsDevice.Viewport.AspectRatio; }
         }
+
 
         public event EventHandler<MatrixChangedEventArgs> WorldChanged {
             add { model.WorldChanged += value; }
             remove { model.WorldChanged -= value; }
         }
 
+
         public event EventHandler<MatrixChangedEventArgs> ViewChanged {
             add { camera.ViewChanged += value; }
             remove { camera.ViewChanged -= value; }
         }
+
 
         public event EventHandler<MatrixChangedEventArgs> ProjectionChanged {
             add { camera.ProjectionChanged += value; }
@@ -54,8 +67,6 @@ namespace Matrixplorer.Controls {
 
 
         protected override void Initialize() {
-
-            components = new List<IUpdateable>();
             InitModel();
             InitCamera();
             InitAxes();
@@ -64,46 +75,31 @@ namespace Matrixplorer.Controls {
         }
 
 
-        private void SetAnimation(string whichMatrix, Matrix end) {
+        private Matrix GetMatrix(MatrixType whichMatrix) {
             switch (whichMatrix) {
-                case "world":
-                    model.AnimateWorldTo(end);
-                    break;
-
-                case "view":
-                    camera.AnimateViewTo(end);
-                    break;
-
-                case "projection":
-                    camera.AnimateProjectionTo(end);
-                    break;
-            }
-        }
-
-        private Matrix GetMatrix(string whichMatrix) {
-            switch (whichMatrix) {
-                case "world":
+                case MatrixType.World:
                     return model.World;
 
-                case "view":
+                case MatrixType.View:
                     return camera.View;
 
-                case "projection":
+                case MatrixType.Projection:
                     return camera.Projection;
 
-                default:
-                    throw new InvalidOperationException(String.Format("{0} is not a recognized matrix.", whichMatrix));
             }
 
+            throw new InvalidOperationException(String.Format("Unrecognized matrix type: {0}", whichMatrix));
+
         }
 
 
-        public void AnimateTo(string whichMatrix, Matrix end) {
-            SetAnimation(whichMatrix, end);
+        public bool AnimateTo(MatrixType whichMatrix, Matrix end) {
+            return SetAnimation(whichMatrix, end);
         }
 
-        public void AnimateTransform(string whichMatrix, Matrix transform) {
-            SetAnimation(whichMatrix, transform * GetMatrix(whichMatrix));
+
+        public bool AnimateTransform(MatrixType whichMatrix, Matrix transform) {
+            return SetAnimation(whichMatrix, transform * GetMatrix(whichMatrix));
         }
 
 
@@ -111,7 +107,6 @@ namespace Matrixplorer.Controls {
             
             ContentManager content = new ContentManager(Services, "Content");
             model = new Object3D(content);
-            components.Add(model);
 
         }
 
@@ -123,8 +118,6 @@ namespace Matrixplorer.Controls {
                 target: Vector3.Zero,
                 aspectRatio: GraphicsDevice.Viewport.AspectRatio
             );
-
-            components.Add(camera);
 
         }
 
@@ -231,7 +224,6 @@ namespace Matrixplorer.Controls {
 
         protected override void Draw() {
 
-            components.ForEach(c => c.Update());
             GraphicsDevice.Clear(Color.White);
             DrawAxes();
             model.Draw(camera);

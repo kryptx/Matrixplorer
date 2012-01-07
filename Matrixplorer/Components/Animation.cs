@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework;
 
 namespace Matrixplorer.Components {
 
+    // where T: struct allows more than we really want,
+    // but it is the narrowest constraint that will allow 
+    // all the types that are appropriate in this context
     class Animation<T> where T: struct {
 
         private T initial;
@@ -40,8 +43,8 @@ namespace Matrixplorer.Components {
             }
         }
 
-        // i and f are of type T, and we know they can be added/subtracted,
-        // but the compiler complains if we try that
+        // i and f are of type T, and if T makes sense for animations then they
+        // can be added/subtracted, but the compiler complains if we try that
         private T Lerp(dynamic i, dynamic f, float amount) {
             return i + ((f - i) * amount);
         }

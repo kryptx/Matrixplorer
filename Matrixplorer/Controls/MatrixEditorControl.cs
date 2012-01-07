@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 
 namespace Matrixplorer.Controls {
-    public partial class MatrixEditor : UserControl {
+    public partial class MatrixEditorControl : UserControl {
 
         private const string elementFormat = "G4";
 
@@ -36,11 +36,11 @@ namespace Matrixplorer.Controls {
 
         }
 
-        public MatrixEditor() : base() {
+        public MatrixEditorControl() : base() {
             InitializeComponent();
         }
 
-        public MatrixEditor(Matrix source, EventHandler<MatrixChangedEventArgs> changedEvent)
+        public MatrixEditorControl(Matrix source, EventHandler<MatrixChangedEventArgs> changedEvent)
             : this() {
             changedEvent += MatrixChanged;
             SetValues(source);

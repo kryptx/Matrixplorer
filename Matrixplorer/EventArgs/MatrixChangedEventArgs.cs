@@ -8,5 +8,11 @@ using Microsoft.Xna.Framework;
 namespace Matrixplorer {
     public class MatrixChangedEventArgs : EventArgs {
         public Matrix NewMatrix { get; set; }
+
+        public MatrixChangedEventArgs(Matrix newMatrix) {
+            NewMatrix = newMatrix;
+        }
+
+        public MatrixChangedEventArgs() { }
     }
 }

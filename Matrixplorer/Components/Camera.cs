@@ -7,13 +7,14 @@ using Microsoft.Xna.Framework;
 
 namespace Matrixplorer.Components {
 
-    class Camera : ICamera, IUpdateable {
-        
-        public event EventHandler<MatrixChangedEventArgs> ViewChanged;
+    class Camera : ICamera {
+
+        public event EventHandler<MatrixChangedEventArgs> ViewChanged {
+            add { projection.Changed += value; }
+            remove { projection.Changed -= value; }
+        }
         public event EventHandler<MatrixChangedEventArgs> ProjectionChanged;
 
-        private Animation<Matrix> viewAnimation;
-        private Animation<Matrix> projectionAnimation;
 
         // position and view provide shortcut properties to generate a view matrix
         private Vector3 position;
@@ -37,38 +38,24 @@ namespace Matrixplorer.Components {
         private Vector3 up;
         private Vector3 strafe;
 
-        private Matrix projection;
+        private AnimatableMatrix projection;
         public Matrix Projection {
-
-            get { return projection; }
-            set {
-                projection = value;
-                if (ProjectionChanged != null) {
-                    ProjectionChanged.Invoke(this, 
-                        new MatrixChangedEventArgs { NewMatrix = value });
-                }
-            }
-
+            get { return projection.Matrix; }
+            set { projection.SetMatrix(value); }
         }
 
-        private Matrix view;
+        private AnimatableMatrix view;
         public Matrix View {
 
-            get { return view; }
+            get { return view.Matrix; }
             set {
-                view = value;
+                view.SetMatrix(value);
 
                 Matrix inverseView = Matrix.Invert(value);
                 position = inverseView.Translation;
                 target = inverseView.Forward;
                 up = inverseView.Up;
-
-                if (ViewChanged != null) {
-                    ViewChanged.Invoke(this, 
-                        new MatrixChangedEventArgs { NewMatrix = value });
-                }
             }
-
         }
 
         private float aspectRatio;
@@ -100,6 +87,7 @@ namespace Matrixplorer.Components {
             up = Vector3.Cross(Target - Position, strafe);
         }
 
+
         // projection matrix computation uses fairly typical FOV and depth values
         private void ComputeProjection() {
             Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, AspectRatio, 0.1f, 50.0f);
@@ -125,34 +113,6 @@ namespace Matrixplorer.Components {
             Position *= (1 + (distance / position.Length()));
         }
 
-
-        public void AnimateViewTo(Matrix end) {
-            viewAnimation = new Animation<Matrix>(View, end);
-        }
-
-
-        public void AnimateProjectionTo(Matrix end) {
-            projectionAnimation = new Animation<Matrix>(Projection, end);
-        }
-
-
-        public void Update() {
-
-            if (viewAnimation != null) {
-                View = viewAnimation.CurrentValue;
-                if (viewAnimation.Ended) {
-                    viewAnimation = null;
-                }
-            }
-
-            if (projectionAnimation != null) {
-                Projection = projectionAnimation.CurrentValue;
-                if (projectionAnimation.Ended) {
-                    projectionAnimation = null;
-                }
-            }
-
-        }
     }
 
 }
