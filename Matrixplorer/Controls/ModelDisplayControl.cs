@@ -27,42 +27,23 @@ namespace Matrixplorer.Controls {
 
         private Object3D model;
 
-        public Matrix World { 
+        public AnimatableMatrix World { 
             get { return model.World; }
             set { model.World = value; }
         }
 
-        public Matrix View {
+        public AnimatableMatrix View {
             get { return camera.View; }
-            set { camera.View = value;
-            }
+            set { camera.View = value; }
         }
 
-        public Matrix Projection {
+        public AnimatableMatrix Projection {
             get { return camera.Projection; }
             set { camera.Projection = value; }
         }
 
         public float AspectRatio {
             get { return GraphicsDevice.Viewport.AspectRatio; }
-        }
-
-
-        public event EventHandler<MatrixChangedEventArgs> WorldChanged {
-            add { model.WorldChanged += value; }
-            remove { model.WorldChanged -= value; }
-        }
-
-
-        public event EventHandler<MatrixChangedEventArgs> ViewChanged {
-            add { camera.ViewChanged += value; }
-            remove { camera.ViewChanged -= value; }
-        }
-
-
-        public event EventHandler<MatrixChangedEventArgs> ProjectionChanged {
-            add { camera.ProjectionChanged += value; }
-            remove { camera.ProjectionChanged -= value; }
         }
 
 
@@ -75,16 +56,16 @@ namespace Matrixplorer.Controls {
         }
 
 
-        private Matrix GetMatrix(MatrixType whichMatrix) {
+        internal AnimatableMatrix GetMatrix(MatrixType whichMatrix) {
             switch (whichMatrix) {
                 case MatrixType.World:
-                    return model.World;
+                    return World;
 
                 case MatrixType.View:
-                    return camera.View;
+                    return View;
 
                 case MatrixType.Projection:
-                    return camera.Projection;
+                    return Projection;
 
             }
 
@@ -94,12 +75,13 @@ namespace Matrixplorer.Controls {
 
 
         public bool AnimateTo(MatrixType whichMatrix, Matrix end) {
-            return SetAnimation(whichMatrix, end);
+            return GetMatrix(whichMatrix).AnimateTo(end);
         }
 
 
         public bool AnimateTransform(MatrixType whichMatrix, Matrix transform) {
-            return SetAnimation(whichMatrix, transform * GetMatrix(whichMatrix));
+            AnimatableMatrix aniMatrix = GetMatrix(whichMatrix);
+            return GetMatrix(whichMatrix).AnimateTo(transform * aniMatrix.Matrix);
         }
 
 
@@ -224,6 +206,7 @@ namespace Matrixplorer.Controls {
 
         protected override void Draw() {
 
+            UpdateAnimations();
             GraphicsDevice.Clear(Color.White);
             DrawAxes();
             model.Draw(camera);
@@ -231,10 +214,17 @@ namespace Matrixplorer.Controls {
         }
 
 
+        private void UpdateAnimations() {
+            World.Update();
+            View.Update();
+            Projection.Update();
+        }
+
+
         private void DrawAxes() {
 
-            axisEffect.View = camera.View;
-            axisEffect.Projection = camera.Projection;
+            axisEffect.View = View.Matrix;
+            axisEffect.Projection = Projection.Matrix;
             axisEffect.CurrentTechnique.Passes[0].Apply();
             GraphicsDevice.SetVertexBuffer(axesBuffer);
             GraphicsDevice.DrawPrimitives(PrimitiveType.LineList, 0, axesBuffer.VertexCount);
@@ -246,6 +236,9 @@ namespace Matrixplorer.Controls {
             camera.AspectRatio = GraphicsDevice.Viewport.AspectRatio;
         }
 
-    }
 
+        internal void SetNow(MatrixType type, Matrix newMatrix) {
+            GetMatrix(type).Set(newMatrix);
+        }
+    }
 }

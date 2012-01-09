@@ -6,12 +6,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 
 namespace Matrixplorer.Components {
-
-    public interface ICamera {
-
-        AnimatableMatrix View { get; set; }
-        AnimatableMatrix Projection { get; set; }
-
+    public interface IMatrix {
+        Matrix Matrix { get; }
+        void Set(Matrix matrix);
+        event EventHandler<MatrixChangedEventArgs> Changed;
     }
-
 }

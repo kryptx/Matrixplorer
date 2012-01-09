@@ -11,35 +11,26 @@ namespace Matrixplorer.Components {
 
     public class Object3D {
 
-        public event EventHandler<MatrixChangedEventArgs> WorldChanged {
-            add { world.Changed += value; }
-            remove { world.Changed -= value; }
-        }
-
         private Model model;
         private Matrix[] boneTransforms;
 
-        private AnimatableMatrix world;
-        public Matrix World {
-            get { return world.Matrix; }
-            set { world.SetMatrix(value); }
-        }
+        public AnimatableMatrix World { get; set; }
 
         public Object3D(ContentManager content) {
             
             model = content.Load<Model>("SpaceShip");
             boneTransforms = new Matrix[model.Bones.Count];
             model.CopyAbsoluteBoneTransformsTo(boneTransforms);
-            world = new AnimatableMatrix();
+            World = new AnimatableMatrix();
 
         }
 
         public void Draw(ICamera camera) {
             foreach (ModelMesh mesh in model.Meshes) {
                 foreach (BasicEffect effect in mesh.Effects) {
-                    effect.World = boneTransforms[mesh.ParentBone.Index] * World;
-                    effect.View = camera.View;
-                    effect.Projection = camera.Projection;
+                    effect.World = boneTransforms[mesh.ParentBone.Index] * World.Matrix;
+                    effect.View = camera.View.Matrix;
+                    effect.Projection = camera.Projection.Matrix;
 
                     effect.EnableDefaultLighting();
                     effect.PreferPerPixelLighting = true;
@@ -51,7 +42,8 @@ namespace Matrixplorer.Components {
         }
 
         public void Rotate(float angle) {
-            World *= Matrix.CreateRotationY(MathHelper.ToRadians(angle));
+            World.Set(
+                Matrix.CreateRotationY(MathHelper.ToRadians(angle)) * World.Matrix);
         }
 
     }

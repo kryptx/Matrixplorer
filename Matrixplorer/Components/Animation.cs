@@ -37,8 +37,7 @@ namespace Matrixplorer.Components {
 
         public T CurrentValue {
             get {
-                return (timer.ElapsedMilliseconds >= duration) ?
-                    final :
+                return Ended? final :
                     Lerp(initial, final, ((float)timer.ElapsedMilliseconds / (float)duration));
             }
         }

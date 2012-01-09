@@ -9,13 +9,6 @@ namespace Matrixplorer.Components {
 
     class Camera : ICamera {
 
-        public event EventHandler<MatrixChangedEventArgs> ViewChanged {
-            add { projection.Changed += value; }
-            remove { projection.Changed -= value; }
-        }
-        public event EventHandler<MatrixChangedEventArgs> ProjectionChanged;
-
-
         // position and view provide shortcut properties to generate a view matrix
         private Vector3 position;
         public Vector3 Position {
@@ -38,23 +31,19 @@ namespace Matrixplorer.Components {
         private Vector3 up;
         private Vector3 strafe;
 
-        private AnimatableMatrix projection;
-        public Matrix Projection {
-            get { return projection.Matrix; }
-            set { projection.SetMatrix(value); }
-        }
+        public AnimatableMatrix Projection { get; set; }
 
         private AnimatableMatrix view;
-        public Matrix View {
-
-            get { return view.Matrix; }
+        public AnimatableMatrix View {
+            get { return view; }
             set {
-                view.SetMatrix(value);
-
-                Matrix inverseView = Matrix.Invert(value);
-                position = inverseView.Translation;
-                target = inverseView.Forward;
-                up = inverseView.Up;
+                view = value;
+                view.Changed += (sender, e) => {
+                    Matrix inverseView = Matrix.Invert(value.Matrix);
+                    position = inverseView.Translation;
+                    target = inverseView.Forward;
+                    up = inverseView.Up;
+                };
             }
         }
 
@@ -70,11 +59,15 @@ namespace Matrixplorer.Components {
 
         public Camera(Vector3 position, Vector3 target, float aspectRatio) {
 
-            Position = position;
-            Target = target;
-            AspectRatio = aspectRatio;
+            this.position = position;
+            this.target = target;
+            this.aspectRatio = aspectRatio;
+
+            View = new AnimatableMatrix();
+            Projection = new AnimatableMatrix();
 
             ComputeView();
+            ComputeProjection();
 
         }
 
@@ -90,14 +83,18 @@ namespace Matrixplorer.Components {
 
         // projection matrix computation uses fairly typical FOV and depth values
         private void ComputeProjection() {
-            Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, AspectRatio, 0.1f, 50.0f);
+            Projection.Set(
+                Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, AspectRatio, 0.1f, 100.0f)
+            );
         }
 
 
         private void ComputeView() {
 
             ComputeVectors();
-            View = Matrix.CreateLookAt(Position, Target, up);
+            View.Set(
+                Matrix.CreateLookAt(Position, Target, up)
+            );
 
         }
 
@@ -105,7 +102,7 @@ namespace Matrixplorer.Components {
         public void Rotate(int ticks) {
             // ticks == degrees makes for a comfortable amount of rotation
             float angle = MathHelper.ToRadians(ticks);
-            View = Matrix.CreateRotationY(angle) * View;
+            View.Set(Matrix.CreateRotationY(angle) * View.Matrix);
         }
 
 

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Matrixplorer.Commands {
     interface ICommand {
-        void Execute();
+        bool Execute();
         void Undo();
     }
 }

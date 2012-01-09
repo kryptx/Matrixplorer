@@ -48,15 +48,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\ResultDisplayMatrixCommand.cs" />
-    <Compile Include="Commands\ModelDisplayMatrixCommand.cs" />
+    <Compile Include="Commands\AnimatedMatrixCommand.cs" />
+    <Compile Include="Commands\ImmediateMatrixCommand.cs" />
     <Compile Include="Components\AnimatableMatrix.cs" />
+    <Compile Include="Components\IMatrix.cs" />
     <Compile Include="Globals.cs" />
-    <Compile Include="Commands\MatrixCommand.cs" />
-    <Compile Include="Commands\SetModelCommand.cs" />
-    <Compile Include="Commands\SetResultCommand.cs" />
-    <Compile Include="Commands\TransformModelCommand.cs" />
-    <Compile Include="Commands\TransformResultCommand.cs" />
+    <Compile Include="Commands\ChangeMatrixCommand.cs" />
     <Compile Include="Components\Animation.cs" />
     <Compile Include="Components\Camera.cs" />
     <Compile Include="Commands\ICommand.cs" />
@@ -85,7 +82,7 @@
     <Compile Include="Controls\GraphicsDeviceControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GraphicsDeviceService.cs" />
+    <Compile Include="Components\GraphicsDeviceService.cs" />
     <Compile Include="Controls\ModelDisplayControl.cs">
       <SubType>Component</SubType>
     </Compile>

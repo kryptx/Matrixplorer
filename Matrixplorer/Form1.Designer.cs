@@ -959,7 +959,6 @@
             // 
             this.resultMatrixDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
             this.resultMatrixDisplay.Location = new System.Drawing.Point(3, 16);
-            this.resultMatrixDisplay.Matrix = new Microsoft.Xna.Framework.Matrix(0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F);
             this.resultMatrixDisplay.Name = "resultMatrixDisplay";
             this.resultMatrixDisplay.Size = new System.Drawing.Size(222, 101);
             this.resultMatrixDisplay.TabIndex = 0;
@@ -1019,7 +1018,6 @@
             // 
             this.worldMatrixDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
             this.worldMatrixDisplay.Location = new System.Drawing.Point(3, 22);
-            this.worldMatrixDisplay.Matrix = new Microsoft.Xna.Framework.Matrix(0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F);
             this.worldMatrixDisplay.Name = "worldMatrixDisplay";
             this.worldMatrixDisplay.Size = new System.Drawing.Size(279, 138);
             this.worldMatrixDisplay.TabIndex = 0;
@@ -1040,7 +1038,6 @@
             // 
             this.viewMatrixDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
             this.viewMatrixDisplay.Location = new System.Drawing.Point(3, 22);
-            this.viewMatrixDisplay.Matrix = new Microsoft.Xna.Framework.Matrix(0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F);
             this.viewMatrixDisplay.Name = "viewMatrixDisplay";
             this.viewMatrixDisplay.Size = new System.Drawing.Size(279, 138);
             this.viewMatrixDisplay.TabIndex = 0;
@@ -1061,7 +1058,6 @@
             // 
             this.projectionMatrixDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
             this.projectionMatrixDisplay.Location = new System.Drawing.Point(3, 22);
-            this.projectionMatrixDisplay.Matrix = new Microsoft.Xna.Framework.Matrix(0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F);
             this.projectionMatrixDisplay.Name = "projectionMatrixDisplay";
             this.projectionMatrixDisplay.Size = new System.Drawing.Size(288, 138);
             this.projectionMatrixDisplay.TabIndex = 0;

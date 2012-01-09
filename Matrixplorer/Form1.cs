@@ -7,23 +7,38 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using Matrixplorer.Commands;
 using Matrixplorer.Controls;
+using Matrixplorer.Components;
 using Microsoft.Xna.Framework;
 
 namespace Matrixplorer {
     public partial class Form1 : Form {
+
+        Stack<ICommand> undoStack;
+        Stack<ICommand> redoStack;
 
         public Form1() {
 
             InitializeComponent();
             InitFormValues();
 
+            undoStack = new Stack<ICommand>(100);
+            redoStack = new Stack<ICommand>(100);
+
+        }
+
+
+        private void Form1_Load(object sender, EventArgs e) {
+
+            worldMatrixDisplay.Matrix = modelDisplayControl1.World;
+            viewMatrixDisplay.Matrix = modelDisplayControl1.View;
+            projectionMatrixDisplay.Matrix = modelDisplayControl1.Projection;
+
         }
 
 
         private void InitFormValues() {
-            
-            resultMatrixDisplay.Matrix = Matrix.Identity;
 
             yourDispositionComboBox.SelectedIndex = yourDispositionComboBox.Items.IndexOf("Transform");
             yourDestinationComboBox.SelectedIndex = yourDestinationComboBox.Items.IndexOf("Result");
@@ -46,10 +61,12 @@ namespace Matrixplorer {
 
         }
 
+
         private void modelDisplayControl1_Resize(object sender, EventArgs e) {
             modelDisplayControl1.UpdateCameraAspectRatio();
 
         }
+
 
         private void createOrthographicButton_Click(object sender, EventArgs e) {
             try {
@@ -62,6 +79,7 @@ namespace Matrixplorer {
                 MessageBox.Show("Width, height, near plane and far plane must all be numeric.");
             }
         }
+
 
         private void createPerspectiveButton_Click(object sender, EventArgs e) {
             try {
@@ -76,6 +94,7 @@ namespace Matrixplorer {
             }
 
         }
+
 
         private void createViewButton_Click(object sender, EventArgs e) {
             try {
@@ -174,28 +193,6 @@ namespace Matrixplorer {
         }
 
 
-
-
-
-        private void Form1_Load(object sender, EventArgs e) {
-
-            SetMatrixDisplays();
-
-            modelDisplayControl1.WorldChanged += worldMatrixDisplay.MatrixChanged;
-            modelDisplayControl1.ViewChanged += viewMatrixDisplay.MatrixChanged;
-            modelDisplayControl1.ProjectionChanged += projectionMatrixDisplay.MatrixChanged;
-            modelDisplayControl1.ProjectionChanged += (_sender, _e) => {
-                aspectRatioTextBox.Text = modelDisplayControl1.AspectRatio.ToString("G3");
-            };
-
-        }
-
-        private void SetMatrixDisplays() {
-            worldMatrixDisplay.Matrix = modelDisplayControl1.World;
-            viewMatrixDisplay.Matrix = modelDisplayControl1.View;
-            projectionMatrixDisplay.Matrix = modelDisplayControl1.Projection;
-        }
-
         private void yourGoButton_Click(object sender, EventArgs e) {
             try {
                 ProcessGoButton(
@@ -214,7 +211,7 @@ namespace Matrixplorer {
                 ProcessGoButton(
                     resultDispositionComboBox.Text.ToLowerInvariant(), 
                     resultDestinationComboBox.Text.ToLowerInvariant(),
-                    resultMatrixDisplay.Matrix
+                    resultMatrixDisplay.MatrixValue
                 );
             } catch (InvalidOperationException ex) {
                 MessageBox.Show(ex.Message);
@@ -238,37 +235,65 @@ namespace Matrixplorer {
 
             switch (whichMatrix) {
 
-                case "world":
-                case "view":
-                case "projection":
-                    modelDisplayControl1.AnimateTransform(MatrixHelper.StringToType(whichMatrix), transformation);
-                    break;
-
                 case "result":
                     // violation of SRP?
-                    resultMatrixDisplay.Matrix = transformation * resultMatrixDisplay.Matrix;
+                    resultMatrixDisplay.Matrix.Set(transformation * resultMatrixDisplay.MatrixValue);
+                    break;
+
+                default:
+                    modelDisplayControl1.AnimateTransform(MatrixHelper.StringToType(whichMatrix), transformation);
                     break;
 
             }
 
         }
 
+
         private void SetMatrix(string whichMatrix, Matrix matrix) {
+
+            ICommand command;
 
             switch (whichMatrix) {
 
-                case "world":
-                case "view":
-                case "projection":
-                    modelDisplayControl1.AnimateTo(MatrixHelper.StringToType(whichMatrix), matrix);
+                case "result":
+                    command = new ImmediateMatrixCommand(resultMatrixDisplay.Matrix, matrix);
+                    DoCommand(command);
+                    // resultMatrixDisplay.Matrix.Set(matrix);
                     break;
 
-                case "result":
-                    resultMatrixDisplay.Matrix = matrix;
+                default:
+                    MatrixType type = MatrixHelper.StringToType(whichMatrix);
+                    AnimatableMatrix target = modelDisplayControl1.GetMatrix(type);
+                    command = new AnimatedMatrixCommand(target, matrix);
+                    DoCommand(command);
+
+                    // modelDisplayControl1.AnimateTo(MatrixHelper.StringToType(whichMatrix), matrix);
                     break;
 
             }
 
+        }
+
+
+        private void DoCommand(ICommand command) {
+            if (command.Execute()) {
+                undoStack.Push(command);
+                redoStack.Clear();
+            }
+        }
+
+
+        private void Undo() {
+            ICommand command = undoStack.Peek();
+            if (command.Execute())
+                redoStack.Push(undoStack.Pop());
+        }
+
+
+        private void Redo() {
+            ICommand command = redoStack.Peek();
+            if (command.Execute())
+                undoStack.Push(redoStack.Pop());
         }
         
     }
