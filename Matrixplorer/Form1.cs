@@ -219,6 +219,7 @@ namespace Matrixplorer {
 
         }
 
+
         private void ProcessGoButton(string disposition, string destination, Matrix matrix) {
 
             if (disposition.Equals("assign to")) {
@@ -230,6 +231,7 @@ namespace Matrixplorer {
             }
 
         }
+
 
         private void TransformMatrix(string whichMatrix, Matrix transformation) {
 
@@ -257,20 +259,17 @@ namespace Matrixplorer {
 
                 case "result":
                     command = new ImmediateMatrixCommand(resultMatrixDisplay.Matrix, matrix);
-                    DoCommand(command);
-                    // resultMatrixDisplay.Matrix.Set(matrix);
                     break;
 
                 default:
                     MatrixType type = MatrixHelper.StringToType(whichMatrix);
                     AnimatableMatrix target = modelDisplayControl1.GetMatrix(type);
                     command = new AnimatedMatrixCommand(target, matrix);
-                    DoCommand(command);
-
-                    // modelDisplayControl1.AnimateTo(MatrixHelper.StringToType(whichMatrix), matrix);
                     break;
 
             }
+
+            DoCommand(command);
 
         }
 
