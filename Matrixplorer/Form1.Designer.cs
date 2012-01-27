@@ -23,9 +23,15 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            Matrixplorer.Components.SimpleMatrix simpleMatrix5 = new Matrixplorer.Components.SimpleMatrix();
+            Matrixplorer.Components.SimpleMatrix simpleMatrix6 = new Matrixplorer.Components.SimpleMatrix();
+            Matrixplorer.Components.SimpleMatrix simpleMatrix7 = new Matrixplorer.Components.SimpleMatrix();
+            Matrixplorer.Components.SimpleMatrix simpleMatrix8 = new Matrixplorer.Components.SimpleMatrix();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -153,9 +159,28 @@
             // 
             // editToolStripMenuItem
             // 
+            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.undoToolStripMenuItem,
+            this.redoToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
+            // 
+            // undoToolStripMenuItem
+            // 
+            this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+            this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.undoToolStripMenuItem.Text = "Undo";
+            this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
+            // 
+            // redoToolStripMenuItem
+            // 
+            this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
+            this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.redoToolStripMenuItem.Text = "Redo";
+            this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
             // 
             // toolsToolStripMenuItem
             // 
@@ -953,12 +978,13 @@
             this.groupBox2.Size = new System.Drawing.Size(228, 120);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Result";
+            this.groupBox2.Text = "Intermediate Result";
             // 
             // resultMatrixDisplay
             // 
             this.resultMatrixDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
             this.resultMatrixDisplay.Location = new System.Drawing.Point(3, 16);
+            this.resultMatrixDisplay.Matrix = simpleMatrix5;
             this.resultMatrixDisplay.Name = "resultMatrixDisplay";
             this.resultMatrixDisplay.Size = new System.Drawing.Size(222, 101);
             this.resultMatrixDisplay.TabIndex = 0;
@@ -1018,6 +1044,7 @@
             // 
             this.worldMatrixDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
             this.worldMatrixDisplay.Location = new System.Drawing.Point(3, 22);
+            this.worldMatrixDisplay.Matrix = simpleMatrix6;
             this.worldMatrixDisplay.Name = "worldMatrixDisplay";
             this.worldMatrixDisplay.Size = new System.Drawing.Size(279, 138);
             this.worldMatrixDisplay.TabIndex = 0;
@@ -1038,6 +1065,7 @@
             // 
             this.viewMatrixDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
             this.viewMatrixDisplay.Location = new System.Drawing.Point(3, 22);
+            this.viewMatrixDisplay.Matrix = simpleMatrix7;
             this.viewMatrixDisplay.Name = "viewMatrixDisplay";
             this.viewMatrixDisplay.Size = new System.Drawing.Size(279, 138);
             this.viewMatrixDisplay.TabIndex = 0;
@@ -1058,6 +1086,7 @@
             // 
             this.projectionMatrixDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
             this.projectionMatrixDisplay.Location = new System.Drawing.Point(3, 22);
+            this.projectionMatrixDisplay.Matrix = simpleMatrix8;
             this.projectionMatrixDisplay.Name = "projectionMatrixDisplay";
             this.projectionMatrixDisplay.Size = new System.Drawing.Size(288, 138);
             this.projectionMatrixDisplay.TabIndex = 0;
@@ -1192,6 +1221,8 @@
         private System.Windows.Forms.Label zFarPlaneLabel;
         private System.Windows.Forms.Label zNearPlaneLabel;
         private System.Windows.Forms.Button createOrthographicButton;
+        private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
     }
 }
 

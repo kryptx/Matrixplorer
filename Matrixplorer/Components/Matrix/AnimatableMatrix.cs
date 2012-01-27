@@ -6,36 +6,29 @@ using System.Text;
 using Microsoft.Xna.Framework;
 
 namespace Matrixplorer.Components {
-    public class AnimatableMatrix : IMatrix {
-
-        private Matrix matrix;
-        public Matrix Matrix {
-            get { return matrix; }
-            private set {
-                matrix = value;
-                if(Changed != null)
-                    Changed(this, new MatrixChangedEventArgs { NewMatrix = value });
-            }
-        }
+    public class AnimatableMatrix : SimpleMatrix {
 
         private Animation<Matrix> animation;
-
-        public event EventHandler<MatrixChangedEventArgs> Changed;
-
         public AnimatableMatrix(Matrix mat) { matrix = mat; }
         public AnimatableMatrix() : this(Matrix.Identity) { }
-
-        public void Set(Matrix matrix) {
-            animation = null;
-            Matrix = matrix;
-        }
-
+        
         public bool AnimateTo(Matrix newMatrix) {
             if (animation == null) {
                 animation = new Animation<Matrix>(matrix, newMatrix);
                 return true;
             }
             return false;
+        }
+
+        public override bool Invert() {
+            if (Matrix.Determinant() == 0)
+                return false;
+            else return AnimateTo(Matrix.Invert(Matrix));
+        }
+
+        public override void Set(Matrix matrix) {
+            base.Set(matrix);
+            animation = null;
         }
 
         public void Update() {

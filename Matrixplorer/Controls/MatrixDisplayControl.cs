@@ -30,6 +30,8 @@ namespace Matrixplorer.Controls {
 
         public MatrixDisplayControl() {
             InitializeComponent();
+            Matrix = new SimpleMatrix();
+            Matrix.Set(Microsoft.Xna.Framework.Matrix.Identity);
         }
 
 

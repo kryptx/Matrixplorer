@@ -16,8 +16,9 @@ namespace Matrixplorer.Commands {
 
         public abstract bool Execute();
 
-        public void Undo() {
+        public ICommand Undo() {
             matrix.Set(oldMatrix);
+            return this;
         }
 
     }

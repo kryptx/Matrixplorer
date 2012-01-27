@@ -1,0 +1,8 @@
+C:\Users\Jason\Documents\Projects\Matrixplorer\ContentLibrary\bin\x86\Debug\Content\SpaceShip.xnb
+C:\Users\Jason\Documents\Projects\Matrixplorer\ContentLibrary\bin\x86\Debug\Content\wedge_p2_diff_v1_0.xnb
+C:\Users\Jason\Documents\Projects\Matrixplorer\ContentLibrary\bin\x86\Debug\ContentLibrary.dll
+C:\Users\Jason\Documents\Projects\Matrixplorer\ContentLibrary\bin\x86\Debug\ContentLibrary.pdb
+C:\Users\Jason\Documents\Projects\Matrixplorer\ContentLibrary\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Jason\Documents\Projects\Matrixplorer\ContentLibrary\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Jason\Documents\Projects\Matrixplorer\ContentLibrary\obj\x86\Debug\ContentLibrary.dll
+C:\Users\Jason\Documents\Projects\Matrixplorer\ContentLibrary\obj\x86\Debug\ContentLibrary.pdb

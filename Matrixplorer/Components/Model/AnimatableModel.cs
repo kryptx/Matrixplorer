@@ -9,14 +9,14 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Matrixplorer.Components {
 
-    public class Object3D {
+    public class AnimatableModel {
 
         private Model model;
         private Matrix[] boneTransforms;
 
         public AnimatableMatrix World { get; set; }
 
-        public Object3D(ContentManager content) {
+        public AnimatableModel(ContentManager content) {
             
             model = content.Load<Model>("SpaceShip");
             boneTransforms = new Matrix[model.Bones.Count];

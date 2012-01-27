@@ -15,17 +15,11 @@ using Microsoft.Xna.Framework;
 namespace Matrixplorer {
     public partial class Form1 : Form {
 
-        Stack<ICommand> undoStack;
-        Stack<ICommand> redoStack;
-
         public Form1() {
 
             InitializeComponent();
             InitFormValues();
-
-            undoStack = new Stack<ICommand>(100);
-            redoStack = new Stack<ICommand>(100);
-
+            CommandManager.Init();
         }
 
 
@@ -34,6 +28,7 @@ namespace Matrixplorer {
             worldMatrixDisplay.Matrix = modelDisplayControl1.World;
             viewMatrixDisplay.Matrix = modelDisplayControl1.View;
             projectionMatrixDisplay.Matrix = modelDisplayControl1.Projection;
+            resultMatrixDisplay.Matrix = new SimpleMatrix();
 
         }
 
@@ -235,18 +230,27 @@ namespace Matrixplorer {
 
         private void TransformMatrix(string whichMatrix, Matrix transformation) {
 
+            ICommand command;
             switch (whichMatrix) {
 
                 case "result":
-                    // violation of SRP?
-                    resultMatrixDisplay.Matrix.Set(transformation * resultMatrixDisplay.MatrixValue);
+                    command = new ImmediateMatrixCommand(
+                        resultMatrixDisplay.Matrix, 
+                        MatrixHelper.Transform(resultMatrixDisplay.MatrixValue, transformation)
+                    );
                     break;
 
                 default:
-                    modelDisplayControl1.AnimateTransform(MatrixHelper.StringToType(whichMatrix), transformation);
+                    MatrixType type = MatrixHelper.StringToType(whichMatrix);
+                    AnimatableMatrix target = modelDisplayControl1.GetMatrix(type);
+                    command = new AnimatedMatrixCommand(target,
+                        MatrixHelper.Transform(target.Matrix, transformation)
+                    );
                     break;
 
             }
+
+            CommandManager.DoCommand(command);
 
         }
 
@@ -269,30 +273,17 @@ namespace Matrixplorer {
 
             }
 
-            DoCommand(command);
+            CommandManager.DoCommand(command);
 
         }
 
 
-        private void DoCommand(ICommand command) {
-            if (command.Execute()) {
-                undoStack.Push(command);
-                redoStack.Clear();
-            }
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e) {
+            CommandManager.Undo();
         }
 
-
-        private void Undo() {
-            ICommand command = undoStack.Peek();
-            if (command.Execute())
-                redoStack.Push(undoStack.Pop());
-        }
-
-
-        private void Redo() {
-            ICommand command = redoStack.Peek();
-            if (command.Execute())
-                undoStack.Push(redoStack.Pop());
+        private void redoToolStripMenuItem_Click(object sender, EventArgs e) {
+            CommandManager.Redo();
         }
         
     }

@@ -9,8 +9,8 @@ namespace Matrixplorer.Components {
 
     public interface ICamera {
 
-        AnimatableMatrix View { get; set; }
-        AnimatableMatrix Projection { get; set; }
+        IMatrix View { get; set; }
+        IMatrix Projection { get; set; }
 
     }
 

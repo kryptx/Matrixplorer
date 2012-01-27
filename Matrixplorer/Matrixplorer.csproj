@@ -13,6 +13,22 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>C:\Users\Jason\Desktop\Matrixplorer\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -33,6 +49,18 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>F55DD888F24A75DBD4EED7E36CE487E9DCFBC697</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>Matrixplorer_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
@@ -49,17 +77,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\AnimatedMatrixCommand.cs" />
-    <Compile Include="Commands\ImmediateMatrixCommand.cs" />
-    <Compile Include="Components\AnimatableMatrix.cs" />
-    <Compile Include="Components\IMatrix.cs" />
-    <Compile Include="Globals.cs" />
-    <Compile Include="Commands\ChangeMatrixCommand.cs" />
-    <Compile Include="Components\Animation.cs" />
-    <Compile Include="Components\Camera.cs" />
-    <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\CommandManager.cs" />
-    <Compile Include="Components\ICamera.cs" />
-    <Compile Include="Components\Object3D.cs" />
+    <Compile Include="Commands\ImmediateMatrixCommand.cs" />
+    <Compile Include="Components\Matrix\AnimatableMatrix.cs" />
+    <Compile Include="Components\Matrix\IMatrix.cs" />
+    <Compile Include="Components\Matrix\SimpleMatrix.cs" />
+    <Compile Include="Commands\ChangeMatrixCommand.cs" />
+    <Compile Include="Components\Animation\Animation.cs" />
+    <Compile Include="Components\Camera\AnimatableCamera.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Components\Camera\ICamera.cs" />
+    <Compile Include="Components\Model\AnimatableModel.cs" />
     <Compile Include="Controls\MatrixEditorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -82,7 +110,7 @@
     <Compile Include="Controls\GraphicsDeviceControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\GraphicsDeviceService.cs" />
+    <Compile Include="GraphicsDeviceService.cs" />
     <Compile Include="Controls\ModelDisplayControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -107,7 +135,10 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.config" />
+    <None Include="Matrixplorer_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -118,14 +149,34 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="ContentLibrary\ContentLibrary\ContentLibrary.csproj">
-      <Project>{7E6A9631-3259-4018-B7D6-789C01E89077}</Project>
-      <Name>ContentLibrary</Name>
-    </ProjectReference>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Exceptions\" />
+    <ProjectReference Include="..\ContentLibrary\ContentLibrary.csproj">
+      <Project>{EEE72DAD-9FB6-4F5C-A3FD-AF0932E3268F}</Project>
+      <Name>ContentLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -21,11 +21,11 @@ namespace Matrixplorer.Controls {
         private RotationType rotationType;
 
         private System.Drawing.Point mouseWas;
-        private Camera camera;
+        private AnimatableCamera camera;
         private BasicEffect axisEffect;
         private VertexBuffer axesBuffer;
 
-        private Object3D model;
+        private AnimatableModel model;
 
         public AnimatableMatrix World { 
             get { return model.World; }
@@ -33,12 +33,12 @@ namespace Matrixplorer.Controls {
         }
 
         public AnimatableMatrix View {
-            get { return camera.View; }
+            get { return (AnimatableMatrix)camera.View; }
             set { camera.View = value; }
         }
 
         public AnimatableMatrix Projection {
-            get { return camera.Projection; }
+            get { return (AnimatableMatrix)camera.Projection; }
             set { camera.Projection = value; }
         }
 
@@ -88,14 +88,14 @@ namespace Matrixplorer.Controls {
         private void InitModel() {
             
             ContentManager content = new ContentManager(Services, "Content");
-            model = new Object3D(content);
+            model = new AnimatableModel(content);
 
         }
 
 
         private void InitCamera() {
             
-            camera = new Camera(
+            camera = new AnimatableCamera(
                 position: new Vector3(2.0f, 0.0f, 0.0f),
                 target: Vector3.Zero,
                 aspectRatio: GraphicsDevice.Viewport.AspectRatio

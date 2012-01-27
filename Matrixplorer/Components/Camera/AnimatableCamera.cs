@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Matrixplorer.Components {
 
-    class Camera : ICamera {
+    class AnimatableCamera : ICamera {
 
         // position and view provide shortcut properties to generate a view matrix
         private Vector3 position;
@@ -31,10 +31,10 @@ namespace Matrixplorer.Components {
         private Vector3 up;
         private Vector3 strafe;
 
-        public AnimatableMatrix Projection { get; set; }
+        public IMatrix Projection { get; set; }
 
-        private AnimatableMatrix view;
-        public AnimatableMatrix View {
+        private IMatrix view;
+        public IMatrix View {
             get { return view; }
             set {
                 view = value;
@@ -57,7 +57,7 @@ namespace Matrixplorer.Components {
         }
 
 
-        public Camera(Vector3 position, Vector3 target, float aspectRatio) {
+        public AnimatableCamera(Vector3 position, Vector3 target, float aspectRatio) {
 
             this.position = position;
             this.target = target;
@@ -72,7 +72,7 @@ namespace Matrixplorer.Components {
         }
 
 
-        public Camera() : this(Vector3.UnitZ, Vector3.Zero, 1) { }
+        public AnimatableCamera() : this(Vector3.UnitZ, Vector3.Zero, 1) { }
 
 
         private void ComputeVectors() {
