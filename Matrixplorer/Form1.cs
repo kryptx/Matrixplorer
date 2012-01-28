@@ -36,14 +36,14 @@ namespace Matrixplorer {
 
         private void InitFormValues() {
 
-            yourDispositionComboBox.SelectedIndex = yourDispositionComboBox.Items.IndexOf("Transform");
-            yourDestinationComboBox.SelectedIndex = yourDestinationComboBox.Items.IndexOf("Result");
+            yourDispositionComboBox.SelectedItem = "Transform";
+            yourDestinationComboBox.SelectedItem = "Result";
 
-            resultDispositionComboBox.SelectedIndex = resultDispositionComboBox.Items.IndexOf("Transform");
-            resultDestinationComboBox.SelectedIndex = resultDestinationComboBox.Items.IndexOf("World");
+            resultDispositionComboBox.SelectedItem = "Transform";
+            resultDestinationComboBox.SelectedItem = "World";
 
-            fovUnitsComboBox.SelectedIndex = fovUnitsComboBox.Items.IndexOf("Radians");
-            angleUnitsComboBox.SelectedIndex = angleUnitsComboBox.Items.IndexOf("Radians");
+            fovUnitsComboBox.SelectedItem = "Radians";
+            angleUnitsComboBox.SelectedItem = "Radians";
 
             viewPositionTextBox.Text = "2,0,0";
             viewTargetTextBox.Text = "0,0,0";
