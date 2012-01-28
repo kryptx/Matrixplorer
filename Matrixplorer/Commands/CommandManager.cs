@@ -37,6 +37,14 @@ namespace Matrixplorer.Commands {
             }
         }
 
+        public static bool CanUndo {
+            get { return undoStack.Count > 0; }
+        }
+
+        public static bool CanRedo {
+            get { return redoStack.Count > 0; }
+        }
+
     }
 
 }

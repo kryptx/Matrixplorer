@@ -20,6 +20,7 @@ namespace Matrixplorer {
             InitializeComponent();
             InitFormValues();
             CommandManager.Init();
+            UpdateCommandMenuOptions();
         }
 
 
@@ -250,7 +251,7 @@ namespace Matrixplorer {
 
             }
 
-            CommandManager.DoCommand(command);
+            DoCommand(command);
 
         }
 
@@ -273,18 +274,32 @@ namespace Matrixplorer {
 
             }
 
-            CommandManager.DoCommand(command);
+            DoCommand(command);
 
         }
 
 
+        private void DoCommand(ICommand command) {
+            CommandManager.DoCommand(command);
+            UpdateCommandMenuOptions();
+        }
+
+        private void UpdateCommandMenuOptions() {
+            undoToolStripMenuItem.Enabled = CommandManager.CanUndo;
+            redoToolStripMenuItem.Enabled = CommandManager.CanRedo;
+        }
+
         private void undoToolStripMenuItem_Click(object sender, EventArgs e) {
             CommandManager.Undo();
+            UpdateCommandMenuOptions();
         }
 
         private void redoToolStripMenuItem_Click(object sender, EventArgs e) {
             CommandManager.Redo();
+            UpdateCommandMenuOptions();
         }
+
+
         
     }
 
